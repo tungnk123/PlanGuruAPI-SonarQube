@@ -13,6 +13,8 @@ namespace Infrastructure.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Comment> builder)
         {
+            builder.HasKey(p => p.CommentId);
+
             builder.HasMany(p => p.CommentDevotes)
                 .WithOne(p => p.Comment)
                 .HasForeignKey(p => p.CommentId);

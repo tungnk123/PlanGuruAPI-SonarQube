@@ -13,6 +13,8 @@ namespace Infrastructure.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<Post> builder)
         {
+            builder.HasKey(p => p.PostId);
+
             builder.HasMany(p => p.PostUpvotes)
                 .WithOne(p => p.Post)
                 .HasForeignKey(p => p.PostId);

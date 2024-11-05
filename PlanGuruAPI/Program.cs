@@ -37,6 +37,7 @@ namespace PlanGuruAPI
 
             app.UseAuthorization();
 
+            app.seedData();
 
             app.MapControllers();
 

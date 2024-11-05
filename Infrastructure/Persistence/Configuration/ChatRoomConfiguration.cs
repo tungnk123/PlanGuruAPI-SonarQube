@@ -13,6 +13,8 @@ namespace Infrastructure.Persistence.Configuration
     {
         public void Configure(EntityTypeBuilder<ChatRoom> builder)
         {
+            builder.HasKey(p => p.ChatRoomId);
+
             builder.HasMany(p => p.ChatMessages)
                 .WithOne(p => p.ChatRoom)
                 .HasForeignKey(p => p.ChatRoomId);
