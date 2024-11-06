@@ -1,5 +1,8 @@
 using Application;
+using AutoMapper;
 using Infrastructure;
+using Microsoft.AspNetCore.Hosting;
+using PlanGuruAPI.Mapping;
 using Serilog;
 
 namespace PlanGuruAPI
@@ -17,10 +20,8 @@ namespace PlanGuruAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplication().AddInfrastructure();
-            builder.Host.UseSerilog((context, configuration) =>
-            {
-                configuration.ReadFrom.Configuration(context.Configuration);
-            });
+
+            builder.Services.AddAutoMapper(typeof(Program)); 
 
             var app = builder.Build();
 
@@ -30,12 +31,12 @@ namespace PlanGuruAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseSerilogRequestLogging();
              
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            app.UseExceptionHandler("/error");
 
             app.seedData();
 

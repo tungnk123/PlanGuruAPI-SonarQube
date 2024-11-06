@@ -29,7 +29,18 @@ namespace Infrastructure
                         Password = $"password{i}",
                         Name = $"name{i}"
                     };
+                    context.Users.Add(user);    
                 }
+                User user2 = new User()
+                {
+                    UserId = new Guid(),
+                    Email = "ndam8175@gmail.com",
+                    Password = "123123",
+                    Avatar = "assda.png",
+                    Name = "namdam"
+                };
+                context.Users.Add(user2);
+                context.SaveChanges();
             }
         }
     }

@@ -30,7 +30,13 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new PostConfiguration());
             modelBuilder.ApplyConfiguration(new CommentConfiguration());
             modelBuilder.ApplyConfiguration(new ChatRoomConfiguration());
-            modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());        
+            modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());     
+            modelBuilder.ApplyConfiguration(new PostUpvoteConfiguration());
+            modelBuilder.ApplyConfiguration(new PostDevoteConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentUpvoteConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentDevoteConfiguration());
+            modelBuilder.ApplyConfiguration(new PostShareConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatImagesAndVideosConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

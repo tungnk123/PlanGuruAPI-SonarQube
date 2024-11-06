@@ -1,8 +1,12 @@
-﻿using FluentValidation;
+﻿using Application.Common.Behavior;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,11 +16,12 @@ namespace Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            var assembly = typeof(DependencyInjection).Assembly;
-            services.AddMediatR(configuration => 
-            configuration.RegisterServicesFromAssembly(assembly));
+            services.AddMediatR(typeof(DependencyInjection).Assembly);
 
-            services.AddValidatorsFromAssembly(assembly);
+            services.AddFluentValidation(fv =>
+                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }

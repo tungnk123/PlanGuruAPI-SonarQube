@@ -1,4 +1,6 @@
-﻿using Infrastructure.Persistence;
+﻿using Application.Common.Interface.Persistence;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,6 +20,14 @@ namespace Infrastructure
                 options.UseInMemoryDatabase("InMem");
             });
 
+            services.AddPersistence();
+
+            return services;
+        }
+
+        public static IServiceCollection AddPersistence(this IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
             return services;
         }
     }
