@@ -27,6 +27,11 @@ namespace PlanGuruAPI.Controllers
                     statusCode: 401,
                     title: "Invalid Credential"
                     ),
+                NotFoundException => Problem(
+                    detail: exception.Message,
+                    statusCode: 404,
+                    title: "Not found this resource"
+                    ),
                 _ => Problem(
                     detail: exception.Message,
                     statusCode: 500,

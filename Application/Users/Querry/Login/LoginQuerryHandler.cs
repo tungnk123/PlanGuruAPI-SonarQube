@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Querry
+namespace Application.Users.Querry.Login
 {
     public class LoginQuerryHandler : IRequestHandler<LoginQuerry, LoginResult>
     {
@@ -21,11 +21,11 @@ namespace Application.Users.Querry
         public async Task<LoginResult> Handle(LoginQuerry request, CancellationToken cancellationToken)
         {
             var user = await _userRepo.Login(request.email, request.password);
-            if(user == null)
+            if (user == null)
             {
                 throw new InvalidCredentialException();
             }
-            return new LoginResult(user.UserId);        
+            return new LoginResult(user.UserId);
         }
     }
 }

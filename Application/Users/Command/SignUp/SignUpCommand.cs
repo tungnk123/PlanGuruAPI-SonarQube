@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Querry
+namespace Application.Users.Command.SignUp
 {
-    public record LoginQuerry(string email, string password) : IRequest<LoginResult>;
+    public record SignUpCommand(string email, string password) : IRequest<SignUpResult>;
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Users.Querry
+namespace Application.Users.Querry.Login
 {
     public class LoginQuerryValidator : AbstractValidator<LoginQuerry>
     {
