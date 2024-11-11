@@ -13,7 +13,9 @@ namespace Domain.Entities
         public virtual User User { get; set; }  
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }        
+        public string ImageUrl { get; set; }
+        public string Tag { get; set; }
+        public string Background { get; set; }
         public ICollection<PostUpvote> PostUpvotes { get; set; }
         public ICollection<PostDevote> PostDevotes { get; set; }
         public ICollection<PostShare> PostShares { get; set; }  

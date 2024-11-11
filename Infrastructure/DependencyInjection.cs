@@ -28,6 +28,7 @@ namespace Infrastructure
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPlantPostRepository, PlantPostRepository>();
             return services;
         }
     }
