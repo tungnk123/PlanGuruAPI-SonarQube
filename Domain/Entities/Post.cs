@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Post
+    public class Post : BaseEntity<Guid>
     {
-        public Guid PostId { get; set; }
         public Guid UserId { get; set; }
         public virtual User User { get; set; }  
         public string Title { get; set; }
@@ -16,8 +15,9 @@ namespace Domain.Entities
         public string ImageUrl { get; set; }
         public string Tag { get; set; }
         public string Background { get; set; }
-        public ICollection<PostUpvote> PostUpvotes { get; set; }
-        public ICollection<PostDevote> PostDevotes { get; set; }
-        public ICollection<PostShare> PostShares { get; set; }  
+        public ICollection<PostUpvote> PostUpvotes { get; set; } = [];
+        public ICollection<PostDevote> PostDevotes { get; set; } = [];
+        public ICollection<Comment> PostComments { get; set; } = [];
+        public ICollection<PostShare> PostShares { get; set; } = [];
     }
 }

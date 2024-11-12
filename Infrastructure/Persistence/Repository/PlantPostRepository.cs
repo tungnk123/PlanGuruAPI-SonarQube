@@ -24,5 +24,11 @@ namespace Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
             return post;
         }
+
+        public IQueryable<Post> QueryPosts()
+        {
+            return _context.Posts.AsQueryable();
+        }
+
     }
 }

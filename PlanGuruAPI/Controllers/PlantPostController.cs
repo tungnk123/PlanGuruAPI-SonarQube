@@ -1,4 +1,5 @@
 ﻿using Application.PlantPosts.Command.CreatePost;
+using Application.PlantPosts.Query.GetPlantPosts;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Persistence;
@@ -34,11 +35,20 @@ namespace PlanGuruAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("get-all")]
         public async Task<IActionResult> GetAllPlantPosts()
         {
             return Ok(await _context.Posts.ToListAsync());
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPosts([FromQuery] int limit = 9, [FromQuery] int page = 1)
+        {
+            var query = new GetPlantPostsQuery(limit, page);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
 
     }
 }

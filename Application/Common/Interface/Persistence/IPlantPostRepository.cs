@@ -10,6 +10,7 @@ namespace Application.Common.Interface.Persistence
     public interface IPlantPostRepository
     {
         Task<Post> CreatePostAsync(Post post);
+        IQueryable<Post> QueryPosts();
 
     }
 }
