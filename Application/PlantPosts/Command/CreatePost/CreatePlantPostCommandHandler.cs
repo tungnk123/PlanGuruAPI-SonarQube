@@ -29,7 +29,9 @@ namespace Application.PlantPosts.Command.CreatePost
                 UserId = request.UserId,
                 ImageUrl = request.ImageUrl,
                 Tag = request.Tag,
-                Background = request.Background
+                Background = request.Background,
+                CreatedAt = DateTime.UtcNow,
+                LastModifiedAt = DateTime.UtcNow
             };
 
             await _postRepo.CreatePostAsync(post);
