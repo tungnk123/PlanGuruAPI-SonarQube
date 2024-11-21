@@ -41,9 +41,9 @@ namespace PlanGuruAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts([FromQuery] int limit = 9, [FromQuery] int page = 1)
+        public async Task<IActionResult> GetPosts([FromQuery] int limit = 9, [FromQuery] int page = 1, [FromQuery] string? tag = null, [FromQuery] string? filter = "time")
         {
-            var query = new GetPlantPostsQuery(limit, page);
+            var query = new GetPlantPostsQuery(limit, page, tag, filter);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

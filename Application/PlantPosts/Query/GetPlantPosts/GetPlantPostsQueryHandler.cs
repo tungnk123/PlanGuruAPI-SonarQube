@@ -1,12 +1,8 @@
 ﻿using Application.Common.Interface.Persistence;
 using Application.PlantPosts.Common.GetPlantPosts;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.PlantPosts.Query.GetPlantPosts
 {
@@ -23,12 +19,32 @@ namespace Application.PlantPosts.Query.GetPlantPosts
         {
             var skip = (request.Page - 1) * request.Limit;
 
-            var posts = await _postRepo.QueryPosts()
-                .Include(p => p.User)
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip(skip)
-                .Take(request.Limit)
-                .ToListAsync(cancellationToken);
+            var baseQuery = _postRepo.QueryPosts().Include(p => p.User);
+
+            IQueryable<Post> query = baseQuery;
+
+            if (!string.IsNullOrEmpty(request.Tag))
+            {
+                query = query.Where(p => p.Tag == request.Tag);
+            }
+
+            switch (request.Filter?.ToLower())
+            {
+                case "trending":
+                    var lastWeek = DateTime.UtcNow.AddDays(-7);
+                    query = query.OrderByDescending(p => p.PostUpvotes.Count + p.PostDevotes.Count + p.PostComments.Count)
+                                 .Where(p => p.CreatedAt >= lastWeek);
+                    break;
+                case "upvote":
+                    query = query.OrderByDescending(p => p.PostUpvotes.Count);
+                    break;
+                case "time":
+                default:
+                    query = query.OrderByDescending(p => p.CreatedAt);
+                    break;
+            }
+
+            var posts = await query.Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
 
             return posts.Select(post => new PlantPostDto(
                 post.Id,
