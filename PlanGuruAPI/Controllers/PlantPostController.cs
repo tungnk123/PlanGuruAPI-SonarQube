@@ -1,13 +1,12 @@
 ﻿using Application.PlantPosts.Command.CreatePost;
 using Application.PlantPosts.Query.GetPlantPosts;
+using Application.PlantPosts.Query.GetTags;
 using AutoMapper;
-using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PlanGuruAPI.Controllers
 {
@@ -35,7 +34,7 @@ namespace PlanGuruAPI.Controllers
             return Ok(response);
         }
 
-        [HttpGet("get-all")]
+        [HttpGet("test/get-all")]
         public async Task<IActionResult> GetAllPlantPosts()
         {
             return Ok(await _context.Posts.ToListAsync());
@@ -47,6 +46,13 @@ namespace PlanGuruAPI.Controllers
             var query = new GetPlantPostsQuery(limit, page);
             var result = await _mediator.Send(query);
             return Ok(result);
+        }
+
+        [HttpGet("test/get-all-tags")]
+        public async Task<IActionResult> GetTags()
+        {
+            var tags = await _mediator.Send(new GetTagsQuery());
+            return Ok(tags);
         }
 
 
