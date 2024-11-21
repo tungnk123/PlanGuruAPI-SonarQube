@@ -63,6 +63,26 @@ namespace Infrastructure
                         context.Posts.Add(post);
                     }
                     context.SaveChanges();
+
+                    // Get the first post
+                    var firstPost = context.Posts.FirstOrDefault();
+
+                    if (firstPost != null)
+                    {
+                        // Seed Comments
+                        for (int i = 0; i < 2; i++)
+                        {
+                            Comment comment = new Comment()
+                            {
+                                CommentId = Guid.NewGuid(),
+                                PostId = firstPost.Id,
+                                UserId = firstUser.UserId,
+                                Message = $"This is comment {i + 1} on the first post."
+                            };
+                            context.Comments.Add(comment);
+                        }
+                        context.SaveChanges();
+                    }
                 }
             }
         }
