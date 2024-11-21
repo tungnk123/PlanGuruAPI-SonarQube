@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.PlantPosts.Query.GetTags
 {
-    public class GetTagsQueryHandler : IRequestHandler<GetTagsQuery, List<string>>
+    public class GetTagsQueryHandler : IRequestHandler<GetTagsQuery, List<string>>, IRequestHandler<GetFiltersQuery, List<string>>
     {
         private readonly ITagRepository _tagRepository;
 
@@ -21,6 +21,11 @@ namespace Application.PlantPosts.Query.GetTags
         public async Task<List<string>> Handle(GetTagsQuery request, CancellationToken cancellationToken)
         {
             return await _tagRepository.GetTagsAsync();
+        }
+
+        public async Task<List<string>> Handle(GetFiltersQuery request, CancellationToken cancellationToken)
+        {
+            return await _tagRepository.GetFiltersAsync();
         }
     }
 

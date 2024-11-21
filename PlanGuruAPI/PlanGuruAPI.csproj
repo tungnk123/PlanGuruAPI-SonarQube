@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="tags.json" />
+    <Content Remove="get_post_param.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="tags.json" />
+    <None Include="get_post_param.json" />
   </ItemGroup>
 
   <ItemGroup>

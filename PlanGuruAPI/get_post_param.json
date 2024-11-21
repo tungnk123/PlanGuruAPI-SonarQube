@@ -1,6 +1,5 @@
 ﻿{
   "tags": [
-    "All Categories",
     "Plants",
     "Flowers",
     "Sell & Trade",
@@ -8,5 +7,10 @@
     "Diseases",
     "Q&A",
     "DIY Projects"
+  ],
+  "filters": [
+    "trending",
+    "upvote",
+    "time"
   ]
 }

@@ -8,6 +8,7 @@ namespace Application.Common.Interface.Persistence
 {
     public interface ITagRepository
     {
+        public Task<List<string>> GetFiltersAsync();
         public Task<List<string>> GetTagsAsync();
     }
 }
