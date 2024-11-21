@@ -14,26 +14,27 @@ namespace Infrastructure
     {
         public static void seedData(this IApplicationBuilder app)
         {
-            using(var serviceScope = app.ApplicationServices.CreateScope())
+            using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<PlanGuruDBContext>();
                 Console.WriteLine("Seeding Data");
 
-                for(int i = 0; i < 5; i++)
+                // Seed Users
+                for (int i = 0; i < 5; i++)
                 {
                     User user = new User()
                     {
-                        UserId = new Guid(),
+                        UserId = Guid.NewGuid(),
                         Email = $"gmail{i}@gmail.com",
                         Avatar = $"avatar{i}.png",
                         Password = $"password{i}",
                         Name = $"name{i}"
                     };
-                    context.Users.Add(user);    
+                    context.Users.Add(user);
                 }
                 User user2 = new User()
                 {
-                    UserId = new Guid(),
+                    UserId = Guid.NewGuid(),
                     Email = "ndam8175@gmail.com",
                     Password = "123123",
                     Avatar = "assda.png",
@@ -41,6 +42,28 @@ namespace Infrastructure
                 };
                 context.Users.Add(user2);
                 context.SaveChanges();
+
+                // Get the first user
+                var firstUser = context.Users.FirstOrDefault();
+
+                if (firstUser != null)
+                {
+                    // Seed Posts
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Post post = new Post()
+                        {
+                            UserId = firstUser.UserId,
+                            Title = $"Post Title {i + 1}",
+                            Description = $"This is the description for post {i + 1}.",
+                            ImageUrl = $"image{i + 1}.png",
+                            Tag = "Plants",
+                            Background = "background.png"
+                        };
+                        context.Posts.Add(post);
+                    }
+                    context.SaveChanges();
+                }
             }
         }
     }
