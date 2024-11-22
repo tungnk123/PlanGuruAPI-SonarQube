@@ -35,6 +35,39 @@ namespace Infrastructure.Persistence.Repository
             return await _context.Comments.ToListAsync();
         }
 
+        public async Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(Guid postId, Guid? parentCommentId = null)
+        {
+            // Step 1: Lấy tất cả các comment theo postId
+            var commentsQuery = _context.Comments.Where(c => c.PostId == postId);
+            var comments = await commentsQuery.ToListAsync();
+            Console.WriteLine($"Step 1 - Comments Count: {comments.Count}");
+
+            // Step 2: Lọc theo parentCommentId nếu có
+            if (parentCommentId.HasValue && parentCommentId.Value != Guid.Empty)
+            {
+                commentsQuery = commentsQuery.Where(c => c.ParentCommentId == parentCommentId.Value);
+            }
+            else
+            {
+                commentsQuery = commentsQuery.Where(c => c.ParentCommentId == null || c.ParentCommentId == Guid.Empty);
+            }
+            comments = await commentsQuery.ToListAsync();
+
+            // Step 3: Include User
+            commentsQuery = commentsQuery.Include(c => c.User);
+            comments = await commentsQuery.ToListAsync();
+
+            // Step 4: Include CommentUpvotes
+            commentsQuery = commentsQuery.Include(c => c.CommentUpvotes);
+            comments = await commentsQuery.ToListAsync();
+
+            // Step 5: Include CommentDevotes
+            commentsQuery = commentsQuery.Include(c => c.CommentDevotes);
+            comments = await commentsQuery.ToListAsync();
+
+            return comments;
+        }
+
         public async Task UpdateCommentAsync(Comment comment)
         {
             _context.Comments.Update(comment);

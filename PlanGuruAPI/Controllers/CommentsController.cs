@@ -73,5 +73,24 @@ namespace PlanGuruAPI.Controllers
             await _commentRepository.DeleteCommentAsync(id);
             return NoContent();
         }
+
+        [HttpGet("posts/{postId}/comments")]
+        public async Task<IActionResult> GetCommentsByPostId(Guid postId, [FromQuery] Guid? parentCommentId = null)
+        {
+            var comments = await _commentRepository.GetCommentsByPostIdAsync(postId, parentCommentId);
+            var commentDtos = comments.Select(c => new CommentDto
+            {
+                CommentId = c.CommentId,
+                UserId = c.UserId,
+                Name = c.User.Name,
+                Avatar = c.User.Avatar,
+                Message = c.Message,
+                NumberOfUpvote = c.CommentUpvotes.Count,
+                NumberOfDevote = c.CommentDevotes.Count,
+                ReplyComment = new List<CommentDto>()
+            }).ToList();
+
+            return Ok(commentDtos);
+        }
     }
 }
