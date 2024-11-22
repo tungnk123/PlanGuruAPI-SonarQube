@@ -89,10 +89,34 @@ namespace Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task RemoveCommentUpvoteAsync(CommentUpvote commentUpvote)
+        {
+            _context.CommentUpvotes.Remove(commentUpvote);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddCommentDevoteAsync(CommentDevote commentDevote)
         {
             _context.CommentDevotes.Add(commentDevote);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCommentDevoteAsync(CommentDevote commentDevote)
+        {
+            _context.CommentDevotes.Remove(commentDevote);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<CommentUpvote?> GetCommentUpvoteAsync(Guid userId, Guid commentId)
+        {
+            return await _context.CommentUpvotes
+                .FirstOrDefaultAsync(cu => cu.UserId == userId && cu.CommentId == commentId);
+        }
+
+        public async Task<CommentDevote?> GetCommentDevoteAsync(Guid userId, Guid commentId)
+        {
+            return await _context.CommentDevotes
+                .FirstOrDefaultAsync(cd => cd.UserId == userId && cd.CommentId == commentId);
         }
 
     }

@@ -43,11 +43,14 @@ namespace Infrastructure
                 context.Users.Add(user2);
                 context.SaveChanges();
 
-                // Get the first user
-                var firstUser = context.Users.FirstOrDefault();
+                // Get the first two users
+                var firstTwoUsers = context.Users.Take(2).ToList();
 
-                if (firstUser != null)
+                if (firstTwoUsers.Count >= 2)
                 {
+                    var firstUser = firstTwoUsers[0];
+                    var secondUser = firstTwoUsers[1];
+
                     // Seed Posts
                     for (int i = 0; i < 3; i++)
                     {
@@ -82,6 +85,36 @@ namespace Infrastructure
                             context.Comments.Add(comment);
                         }
                         context.SaveChanges();
+
+                        // Get the first comment
+                        var firstComment = context.Comments.FirstOrDefault();
+
+                        if (firstComment != null)
+                        {
+                            // Seed Upvotes for the first comment by the first two users
+                            foreach (var user in firstTwoUsers)
+                            {
+                                CommentUpvote commentUpvote = new CommentUpvote()
+                                {
+                                    CommentId = firstComment.CommentId,
+                                    UserId = user.UserId
+                                };
+                                context.CommentUpvotes.Add(commentUpvote);
+                            }
+
+                            // Seed Upvotes for the first post by the first two users
+                            foreach (var user in firstTwoUsers)
+                            {
+                                PostUpvote postUpvote = new PostUpvote()
+                                {
+                                    PostId = firstPost.Id,
+                                    UserId = user.UserId
+                                };
+                                context.PostUpvotes.Add(postUpvote);
+                            }
+
+                            context.SaveChanges();
+                        }
                     }
                 }
             }

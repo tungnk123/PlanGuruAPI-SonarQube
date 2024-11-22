@@ -103,6 +103,26 @@ namespace PlanGuruAPI.Controllers
                 CommentId = upvoteDto.TargetId
             };
 
+            var existingDevote = await _commentRepository.GetCommentDevoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+
+            if (existingDevote != null)
+            {
+                await _commentRepository.RemoveCommentDevoteAsync(existingDevote);
+            }
+
+            var existingUpvote = await _commentRepository.GetCommentUpvoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+
+            if (existingUpvote != null)
+            {
+                await _commentRepository.RemoveCommentUpvoteAsync(existingUpvote);
+                var response2 = new
+                {
+                    status = "success",
+                    message = "Remove upvote comment successfully"
+                };
+                return Ok(response2);
+            }
+
             await _commentRepository.AddCommentUpvoteAsync(commentUpvote);
             var response = new
             {
@@ -122,6 +142,26 @@ namespace PlanGuruAPI.Controllers
                 CommentId = devoteDto.TargetId
             };
 
+            var existingUpvote = await _commentRepository.GetCommentUpvoteAsync(devoteDto.UserId, devoteDto.TargetId);
+
+            if (existingUpvote != null)
+            {
+                await _commentRepository.RemoveCommentUpvoteAsync(existingUpvote);
+            }
+
+            var existingDevote = await _commentRepository.GetCommentDevoteAsync(devoteDto.UserId, devoteDto.TargetId);
+
+            if (existingDevote != null)
+            {
+                await _commentRepository.RemoveCommentDevoteAsync(existingDevote);
+                var response2 = new
+                {
+                    status = "success",
+                    message = "Remove devote comment successfully"
+                };
+                return Ok(response2);
+            }
+
             await _commentRepository.AddCommentDevoteAsync(commentDevote);
             var response = new
             {
@@ -131,6 +171,5 @@ namespace PlanGuruAPI.Controllers
 
             return Ok(response);
         }
-
     }
 }

@@ -36,12 +36,23 @@ namespace Infrastructure.Persistence.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task RemovePostUpvoteAsync(PostUpvote postUpvote)
+        {
+            _context.PostUpvotes.Remove(postUpvote);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddPostDevoteAsync(PostDevote postDevote)
         {
             _context.PostDevotes.Add(postDevote);
             await _context.SaveChangesAsync();
         }
 
+        public async Task RemovePostDevoteAsync(PostDevote postDevote)
+        {
+            _context.PostDevotes.Remove(postDevote);
+            await _context.SaveChangesAsync();
+        }
         public async Task UpdatePostAsync(Post post)
         {
             _context.Posts.Update(post);

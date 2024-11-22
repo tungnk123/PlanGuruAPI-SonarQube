@@ -15,7 +15,9 @@ namespace Application.Common.Interface.Persistence
         Task DeletePostAsync(Guid postId);
 
         Task AddPostUpvoteAsync(PostUpvote postUpvote);
+        Task RemovePostUpvoteAsync(PostUpvote postUpvote);
         Task AddPostDevoteAsync(PostDevote postDevote);
+        Task RemovePostDevoteAsync(PostDevote postDevote);
 
     }
 }

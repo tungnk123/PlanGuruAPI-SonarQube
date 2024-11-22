@@ -12,6 +12,10 @@ namespace Application.Common.Interface.Persistence
         Task UpdateCommentAsync(Comment comment);
         Task DeleteCommentAsync(Guid commentId);
         Task AddCommentUpvoteAsync(CommentUpvote commentUpvote);
+        Task RemoveCommentUpvoteAsync(CommentUpvote commentUpvote);
         Task AddCommentDevoteAsync(CommentDevote commentDevote);
+        Task RemoveCommentDevoteAsync(CommentDevote commentDevote);
+        Task<CommentUpvote> GetCommentUpvoteAsync(Guid userId, Guid commentId);
+        Task<CommentDevote> GetCommentDevoteAsync(Guid userId, Guid commentId);
     }
 }
