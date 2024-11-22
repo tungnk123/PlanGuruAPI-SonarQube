@@ -11,6 +11,11 @@ namespace Application.Common.Interface.Persistence
     {
         Task<Post> CreatePostAsync(Post post);
         IQueryable<Post> QueryPosts();
+        Task UpdatePostAsync(Post post);
+        Task DeletePostAsync(Guid postId);
+
+        Task AddPostUpvoteAsync(PostUpvote postUpvote);
+        Task AddPostDevoteAsync(PostDevote postDevote);
 
     }
 }

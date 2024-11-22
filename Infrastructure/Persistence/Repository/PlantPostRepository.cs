@@ -30,5 +30,33 @@ namespace Infrastructure.Persistence.Repository
             return _context.Posts.AsQueryable();
         }
 
+        public async Task AddPostUpvoteAsync(PostUpvote postUpvote)
+        {
+            _context.PostUpvotes.Add(postUpvote);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddPostDevoteAsync(PostDevote postDevote)
+        {
+            _context.PostDevotes.Add(postDevote);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePostAsync(Post post)
+        {
+            _context.Posts.Update(post);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePostAsync(Guid postId)
+        {
+            var post = await _context.Posts.FindAsync(postId);
+            if (post != null)
+            {
+                _context.Posts.Remove(post);
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 }

@@ -19,7 +19,12 @@ namespace Application.PlantPosts.Query.GetPlantPosts
         {
             var skip = (request.Page - 1) * request.Limit;
 
-            var baseQuery = _postRepo.QueryPosts().Include(p => p.User);
+            var baseQuery = _postRepo.QueryPosts()
+                                     .Include(p => p.User)
+                                     .Include(p => p.PostUpvotes)  
+                                     .Include(p => p.PostDevotes)   
+                                     .Include(p => p.PostComments)      
+                                     .Include(p => p.PostShares);   
 
             IQueryable<Post> query = baseQuery;
 

@@ -1,11 +1,14 @@
-﻿using Application.PlantPosts.Command.CreatePost;
+﻿using Application.Common.Interface.Persistence;
+using Application.PlantPosts.Command.CreatePost;
 using Application.PlantPosts.Query.GetPlantPosts;
 using Application.PlantPosts.Query.GetTags;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlanGuruAPI.DTOs.CommentDTOs;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
 
 namespace PlanGuruAPI.Controllers
@@ -17,12 +20,17 @@ namespace PlanGuruAPI.Controllers
         private readonly PlanGuruDBContext _context;
         private readonly ISender _mediator;
         private readonly IMapper _mapper;
+        private readonly IPlantPostRepository _postRepository;
 
-        public PlantPostController(PlanGuruDBContext context, ISender mediator, IMapper mapper)
+        public PlantPostController(PlanGuruDBContext context, 
+            ISender mediator, 
+            IMapper mapper,
+            IPlantPostRepository postRepository)
         {
             _context = context;
             _mediator = mediator;
             _mapper = mapper;
+            _postRepository = postRepository;
 
         }
 
@@ -55,6 +63,42 @@ namespace PlanGuruAPI.Controllers
             return Ok(tags);
         }
 
+        [HttpPost("upvote")]
+        public async Task<IActionResult> UpvotePost([FromBody] UpvoteDto upvoteDto)
+        {
+            var postUpvote = new PostUpvote
+            {
+                UserId = upvoteDto.UserId,
+                PostId = upvoteDto.TargetId
+            };
 
+            await _postRepository.AddPostUpvoteAsync(postUpvote);
+            var response = new
+            {
+                status = "success",
+                message = "Upvote post successfully"
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost("devote")]
+        public async Task<IActionResult> DevotePost([FromBody] DevoteDto devoteDto)
+        {
+            var postDevote = new PostDevote
+            {
+                UserId = devoteDto.UserId,
+                PostId = devoteDto.TargetId
+            };
+
+            await _postRepository.AddPostDevoteAsync(postDevote);
+            var response = new
+            {
+                status = "success",
+                message = "Devote post successfully"
+            };
+
+            return Ok(response);
+        }
     }
 }
