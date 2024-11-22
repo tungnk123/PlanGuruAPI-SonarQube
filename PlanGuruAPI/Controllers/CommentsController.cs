@@ -104,7 +104,13 @@ namespace PlanGuruAPI.Controllers
             };
 
             await _commentRepository.AddCommentUpvoteAsync(commentUpvote);
-            return Ok();
+            var response = new
+            {
+                status = "success",
+                message = "Upvote comment successfully"
+            };
+
+            return Ok(response);
         }
 
         [HttpPost("devote")]
@@ -117,7 +123,13 @@ namespace PlanGuruAPI.Controllers
             };
 
             await _commentRepository.AddCommentDevoteAsync(commentDevote);
-            return Ok();
+            var response = new
+            {
+                status = "success",
+                message = "Devote comment successfully"
+            };
+
+            return Ok(response);
         }
 
     }
