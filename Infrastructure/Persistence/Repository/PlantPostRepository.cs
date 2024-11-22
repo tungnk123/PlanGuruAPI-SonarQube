@@ -53,6 +53,19 @@ namespace Infrastructure.Persistence.Repository
             _context.PostDevotes.Remove(postDevote);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<PostUpvote?> GetPostUpvoteAsync(Guid userId, Guid postId)
+        {
+            return await _context.PostUpvotes
+                .FirstOrDefaultAsync(pu => pu.UserId == userId && pu.PostId == postId);
+        }
+
+        public async Task<PostDevote?> GetPostDevoteAsync(Guid userId, Guid postId)
+        {
+            return await _context.PostDevotes
+                .FirstOrDefaultAsync(pd => pd.UserId == userId && pd.PostId == postId);
+        }
+
         public async Task UpdatePostAsync(Post post)
         {
             _context.Posts.Update(post);

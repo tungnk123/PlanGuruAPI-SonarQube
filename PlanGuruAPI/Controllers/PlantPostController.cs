@@ -72,6 +72,27 @@ namespace PlanGuruAPI.Controllers
                 PostId = upvoteDto.TargetId
             };
 
+            var existingDevote = await _postRepository.GetPostDevoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+
+            if (existingDevote != null)
+            {
+                await _postRepository.RemovePostDevoteAsync(existingDevote);
+            }
+
+            var existingUpvote = await _postRepository.GetPostUpvoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+
+            if (existingUpvote != null)
+            {
+                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
+                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
+                var response2 = new
+                {
+                    status = "success",
+                    message = "Remove upvote post successfully"
+                };
+                return Ok(response2);
+            }
+
             await _postRepository.AddPostUpvoteAsync(postUpvote);
             var response = new
             {
@@ -90,6 +111,26 @@ namespace PlanGuruAPI.Controllers
                 UserId = devoteDto.UserId,
                 PostId = devoteDto.TargetId
             };
+
+            var existingUpvote = await _postRepository.GetPostUpvoteAsync(devoteDto.UserId, devoteDto.TargetId);
+
+            if (existingUpvote != null)
+            {
+                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
+            }
+
+            var existingDevote = await _postRepository.GetPostDevoteAsync(devoteDto.UserId, devoteDto.TargetId);
+
+            if (existingDevote != null)
+            {
+                await _postRepository.RemovePostDevoteAsync(existingDevote);
+                var response2 = new
+                {
+                    status = "success",
+                    message = "Remove devote post successfully"
+                };
+                return Ok(response2);
+            }
 
             await _postRepository.AddPostDevoteAsync(postDevote);
             var response = new
