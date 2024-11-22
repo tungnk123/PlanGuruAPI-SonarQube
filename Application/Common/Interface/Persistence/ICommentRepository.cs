@@ -11,5 +11,7 @@ namespace Application.Common.Interface.Persistence
         Task<IEnumerable<Comment>> GetCommentsByPostIdAsync(Guid postId, Guid? parentCommentId = null);
         Task UpdateCommentAsync(Comment comment);
         Task DeleteCommentAsync(Guid commentId);
+        Task AddCommentUpvoteAsync(CommentUpvote commentUpvote);
+        Task AddCommentDevoteAsync(CommentDevote commentDevote);
     }
 }

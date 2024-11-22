@@ -1,5 +1,6 @@
 ﻿using Application.Comments.Command;
 using Application.Common.Interface.Persistence;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PlanGuruAPI.DTOs.CommentDTOs;
@@ -38,7 +39,7 @@ namespace PlanGuruAPI.Controllers
             return Ok(comment);
         }
 
-        [HttpGet]
+        [HttpGet("test/get-all")]
         public async Task<IActionResult> GetAllComments()
         {
             var comments = await _commentRepository.GetAllCommentsAsync();
@@ -92,5 +93,32 @@ namespace PlanGuruAPI.Controllers
 
             return Ok(commentDtos);
         }
+
+        [HttpPost("upvote")]
+        public async Task<IActionResult> UpvoteComment([FromBody] UpvoteDto upvoteDto)
+        {
+            var commentUpvote = new CommentUpvote
+            {
+                UserId = upvoteDto.UserId,
+                CommentId = upvoteDto.TargetId
+            };
+
+            await _commentRepository.AddCommentUpvoteAsync(commentUpvote);
+            return Ok();
+        }
+
+        [HttpPost("devote")]
+        public async Task<IActionResult> DevoteComment([FromBody] DevoteDto devoteDto)
+        {
+            var commentDevote = new CommentDevote
+            {
+                UserId = devoteDto.UserId,
+                CommentId = devoteDto.TargetId
+            };
+
+            await _commentRepository.AddCommentDevoteAsync(commentDevote);
+            return Ok();
+        }
+
     }
 }

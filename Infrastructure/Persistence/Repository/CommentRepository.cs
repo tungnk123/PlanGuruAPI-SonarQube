@@ -40,7 +40,6 @@ namespace Infrastructure.Persistence.Repository
             // Step 1: Lấy tất cả các comment theo postId
             var commentsQuery = _context.Comments.Where(c => c.PostId == postId);
             var comments = await commentsQuery.ToListAsync();
-            Console.WriteLine($"Step 1 - Comments Count: {comments.Count}");
 
             // Step 2: Lọc theo parentCommentId nếu có
             if (parentCommentId.HasValue && parentCommentId.Value != Guid.Empty)
@@ -83,5 +82,18 @@ namespace Infrastructure.Persistence.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task AddCommentUpvoteAsync(CommentUpvote commentUpvote)
+        {
+            _context.CommentUpvotes.Add(commentUpvote);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddCommentDevoteAsync(CommentDevote commentDevote)
+        {
+            _context.CommentDevotes.Add(commentDevote);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
