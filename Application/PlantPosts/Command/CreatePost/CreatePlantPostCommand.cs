@@ -1,4 +1,4 @@
-﻿using Application.PlantPosts.Common;
+﻿using Application.PlantPosts.Common.CreatePlantPost;
 using MediatR;
 using System;
 using System.Collections.Generic;

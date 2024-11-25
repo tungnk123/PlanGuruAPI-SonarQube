@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.PlantPosts.Common
+namespace Application.PlantPosts.Common.CreatePlantPost
 {
     public record CreatePostResult(
         string Status,

@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interface.Persistence;
-using Application.PlantPosts.Common;
+using Application.PlantPosts.Common.CreatePlantPost;
 using Domain.Entities;
 using MediatR;
 using System;
@@ -23,18 +23,20 @@ namespace Application.PlantPosts.Command.CreatePost
         {
             var post = new Post
             {
-                PostId = new Guid(),
+                Id = new Guid(),
                 Title = request.Title,
                 Description = request.Description,
                 UserId = request.UserId,
                 ImageUrl = request.ImageUrl,
                 Tag = request.Tag,
-                Background = request.Background
+                Background = request.Background,
+                CreatedAt = DateTime.UtcNow,
+                LastModifiedAt = DateTime.UtcNow
             };
 
             await _postRepo.CreatePostAsync(post);
 
-            return new CreatePostResult("success", post.PostId, "Post created successfully");
+            return new CreatePostResult("success", post.Id, "Post created successfully");
         }
     }
 }
