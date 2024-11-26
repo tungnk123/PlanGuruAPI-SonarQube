@@ -27,6 +27,7 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                                      .Include(p => p.PostShares);   
 
             IQueryable<Post> query = baseQuery;
+            query = query.Where(p => p.IsApproved == true);
 
             if (!string.IsNullOrEmpty(request.Tag))
             {

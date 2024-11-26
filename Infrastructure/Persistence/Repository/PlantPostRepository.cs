@@ -103,5 +103,10 @@ namespace Infrastructure.Persistence.Repository
             var listPost = await _context.Posts.Where(p => p.IsApproved == false).ToListAsync();
             return listPost;
         }
+
+        public async Task<List<Post>> GetApprovedPost()
+        {
+            return await _context.Posts.Where(p => p.IsApproved == true).ToListAsync();
+        }
     }
 }

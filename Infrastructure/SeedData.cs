@@ -61,7 +61,7 @@ namespace Infrastructure
                             Description = $"This is the description for post {i + 1}.",
                             ImageUrl = $"image{i + 1}.png",
                             Tag = "Plants",
-                            Background = "background.png"
+                            Background = "background.png",
                         };
                         context.Posts.Add(post);
                     }

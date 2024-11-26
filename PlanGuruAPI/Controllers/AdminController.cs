@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interface.Persistence;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlanGuruAPI.DTOs.AdminDTOs;
@@ -10,10 +11,12 @@ namespace PlanGuruAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IPlantPostRepository _planPostRepository;
+        private readonly IMapper _mapper;
 
-        public AdminController(IPlantPostRepository plantPostRepository)
+        public AdminController(IPlantPostRepository plantPostRepository, IMapper mapper)
         {
             _planPostRepository = plantPostRepository;
+            _mapper = mapper;
         }
         [HttpPost("approvePost")]
         public async Task<IActionResult> ApprovePost([FromBody]ApprovePostRequest request)

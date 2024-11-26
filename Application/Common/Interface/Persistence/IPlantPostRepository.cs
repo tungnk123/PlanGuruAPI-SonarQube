@@ -16,6 +16,7 @@ namespace Application.Common.Interface.Persistence
         Task DeletePostAsync(Guid postId);
         Task ApprovePostByAdmin(Post post);
         Task<List<Post>> GetUnApprovedPost();
+        Task<List<Post>> GetApprovedPost();
 
         Task AddPostUpvoteAsync(PostUpvote postUpvote);
         Task RemovePostUpvoteAsync(PostUpvote postUpvote);

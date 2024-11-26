@@ -45,7 +45,7 @@ namespace PlanGuruAPI.Controllers
         [HttpGet("test/get-all")]
         public async Task<IActionResult> GetAllPlantPosts()
         {
-            return Ok(await _context.Posts.ToListAsync());
+            return Ok(await _postRepository.GetApprovedPost());
         }
 
         [HttpGet]
