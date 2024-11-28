@@ -37,6 +37,9 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new CommentDevoteConfiguration());
             modelBuilder.ApplyConfiguration(new PostShareConfiguration());
             modelBuilder.ApplyConfiguration(new ChatImagesAndVideosConfiguration());
+            modelBuilder.ApplyConfiguration(new GroupConfiguration());  
+            modelBuilder.ApplyConfiguration(new GroupUserConfiguration());  
+
 
             modelBuilder.Entity<Comment>(entity =>
             {

@@ -18,5 +18,6 @@ namespace Domain.Entities
         public ICollection<PostDevote> PostDevotes { get; set; }
         public ICollection<PostUpvote> PostUpvotes { get; set; }
         public ICollection<PostShare> PostShares { get; set; }      
+        public ICollection<GroupUser> ListGroup { get; set; }  
     }
 }

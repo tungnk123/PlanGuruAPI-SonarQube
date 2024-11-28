@@ -26,6 +26,8 @@ namespace Infrastructure.Persistence.Configuration
             builder.HasMany(p => p.PostShares)
                 .WithOne(p => p.Post)
                 .HasForeignKey(p => p.PostId);
+
+
         }
     }
 }
