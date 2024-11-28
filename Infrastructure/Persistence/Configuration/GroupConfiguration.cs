@@ -18,6 +18,10 @@ namespace Infrastructure.Persistence.Configuration
             builder.HasMany(p => p.PostInGroup)
                 .WithOne(p => p.Group)
                 .HasForeignKey(p => p.GroupId);
+
+            builder.HasOne(p => p.MasterUser)
+                .WithMany(x => x.ListOwnGroup)
+                .HasForeignKey(p => p.MasterUserId);
         }
     }
 }

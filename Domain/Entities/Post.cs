@@ -15,7 +15,7 @@ namespace Domain.Entities
         public string ImageUrl { get; set; }
         public string Tag { get; set; }
         public string Background { get; set; }
-        public Guid GroupId { get; set; }
+        public Guid? GroupId { get; set; }
         public virtual Group Group { get; set; }    
         public bool IsApproved { get; set; }        
         public ICollection<PostUpvote> PostUpvotes { get; set; } = [];

@@ -20,6 +20,7 @@ namespace PlanGuruAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddApplication().AddInfrastructure();
+            builder.Services.AddControllers();
 
             builder.Services.AddAutoMapper(typeof(Program));
 

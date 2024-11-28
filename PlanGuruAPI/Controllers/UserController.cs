@@ -8,7 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PlanGuruAPI.DTOs;
+using PlanGuruAPI.DTOs.UserDTOs;
 using System.Diagnostics.Eventing.Reader;
 
 namespace PlanGuruAPI.Controllers
