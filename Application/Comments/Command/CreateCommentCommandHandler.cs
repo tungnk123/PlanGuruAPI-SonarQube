@@ -24,7 +24,7 @@ namespace Application.Comments.Command
             var commentId = Guid.NewGuid();
             var comment = new Comment
             {
-                CommentId = commentId,
+                Id = commentId,
                 PostId = request.PostId,
                 UserId = request.UserId,
                 Message = request.Message,

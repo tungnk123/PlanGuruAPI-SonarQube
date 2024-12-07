@@ -81,7 +81,7 @@ namespace PlanGuruAPI.Controllers
             var comments = await _commentRepository.GetCommentsByPostIdAsync(postId, parentCommentId);
             var commentDtos = comments.Select(c => new CommentDto
             {
-                CommentId = c.CommentId,
+                CommentId = c.Id,
                 UserId = c.UserId,
                 Name = c.User.Name,
                 Avatar = c.User.Avatar,
@@ -170,6 +170,40 @@ namespace PlanGuruAPI.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPost("reply")]
+        public async Task<IActionResult> ReplyComment([FromBody] ReplyCommentDto replyCommentDto)
+        {
+            var parentComment = await _commentRepository.GetCommentByIdAsync(replyCommentDto.ParentCommentId);
+            if (parentComment == null)
+            {
+                return NotFound(new { message = "Parent comment not found" });
+            }
+
+            // Check if the parent comment is already a reply to another comment
+            if (parentComment.ParentCommentId != Guid.Empty)
+            {
+                var grandParentComment = await _commentRepository.GetCommentByIdAsync(parentComment.ParentCommentId);
+                if (grandParentComment?.ParentCommentId != Guid.Empty)
+                {
+                    return BadRequest(new { message = "Cannot reply to a comment more than 2 levels deep" });
+                }
+            }
+
+            var replyComment = new Comment
+            {
+                Id = Guid.NewGuid(),
+                UserId = replyCommentDto.UserId,
+                PostId = parentComment.PostId,
+                ParentCommentId = replyCommentDto.ParentCommentId,
+                Message = replyCommentDto.Message,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _commentRepository.AddCommentAsync(replyComment);
+
+            return Ok(new { message = "Reply comment created successfully", replyCommentId = replyComment.Id });
         }
     }
 }

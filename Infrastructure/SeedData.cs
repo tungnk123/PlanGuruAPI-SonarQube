@@ -77,7 +77,7 @@ namespace Infrastructure
                         {
                             Comment comment = new Comment()
                             {
-                                CommentId = Guid.NewGuid(),
+                                Id = Guid.NewGuid(),
                                 PostId = firstPost.Id,
                                 UserId = firstUser.UserId,
                                 Message = $"This is comment {i + 1} on the first post."
@@ -96,7 +96,7 @@ namespace Infrastructure
                             {
                                 CommentUpvote commentUpvote = new CommentUpvote()
                                 {
-                                    CommentId = firstComment.CommentId,
+                                    CommentId = firstComment.Id,
                                     UserId = user.UserId
                                 };
                                 context.CommentUpvotes.Add(commentUpvote);

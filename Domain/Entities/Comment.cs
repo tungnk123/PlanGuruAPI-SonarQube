@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Comment
+    public class Comment : BaseEntity<Guid>
     {
-        public Guid CommentId { get; set; }
         public Guid UserId { get; set; }
         public virtual User User { get; set; }      
         public Guid PostId { get; set; }

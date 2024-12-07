@@ -41,7 +41,7 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<Comment>(entity =>
             {
                 // Thiết lập khóa chính cho Comment
-                entity.HasKey(c => c.CommentId);
+                entity.HasKey(c => c.Id);
 
                 // Quan hệ 1-n với User (1 User có nhiều Comment)
                 entity.HasOne(c => c.User)
