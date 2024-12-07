@@ -21,10 +21,10 @@ namespace Application.PlantPosts.Query.GetPlantPosts
 
             var baseQuery = _postRepo.QueryPosts()
                                      .Include(p => p.User)
-                                     .Include(p => p.PostUpvotes)  
-                                     .Include(p => p.PostDevotes)   
-                                     .Include(p => p.PostComments)      
-                                     .Include(p => p.PostShares);   
+                                     .Include(p => p.PostUpvotes)
+                                     .Include(p => p.PostDevotes)
+                                     .Include(p => p.PostComments)
+                                     .Include(p => p.PostShares);
 
             IQueryable<Post> query = baseQuery;
 
@@ -49,6 +49,9 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                     break;
             }
 
+            var totalPosts = await query.CountAsync(cancellationToken);
+            var totalPages = (int)Math.Ceiling(totalPosts / (double)request.Limit);
+
             var posts = await query.Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
 
             return posts.Select(post => new PlantPostDto(
@@ -65,6 +68,7 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 post.PostDevotes.Count,
                 post.PostComments.Count,
                 post.PostShares.Count,
+                totalPages,
                 FormatCreatedAt(post.CreatedAt)
             )).ToList();
         }
