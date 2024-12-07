@@ -118,7 +118,8 @@ namespace PlanGuruAPI.Controllers
                 var response2 = new
                 {
                     status = "success",
-                    message = "Remove upvote comment successfully"
+                    message = "Remove upvote comment successfully",
+                    numberOfUpvotes = await _commentRepository.GetCommentUpvoteCountAsync(upvoteDto.TargetId)
                 };
                 return Ok(response2);
             }
@@ -127,7 +128,8 @@ namespace PlanGuruAPI.Controllers
             var response = new
             {
                 status = "success",
-                message = "Upvote comment successfully"
+                message = "Upvote comment successfully",
+                numberOfUpvotes = await _commentRepository.GetCommentUpvoteCountAsync(upvoteDto.TargetId)
             };
 
             return Ok(response);
@@ -157,7 +159,8 @@ namespace PlanGuruAPI.Controllers
                 var response2 = new
                 {
                     status = "success",
-                    message = "Remove devote comment successfully"
+                    message = "Remove devote comment successfully",
+                    numberOfUpvotes = await _commentRepository.GetCommentUpvoteCountAsync(devoteDto.TargetId)
                 };
                 return Ok(response2);
             }
@@ -166,7 +169,8 @@ namespace PlanGuruAPI.Controllers
             var response = new
             {
                 status = "success",
-                message = "Devote comment successfully"
+                message = "Devote comment successfully",
+                numberOfUpvotes = await _commentRepository.GetCommentUpvoteCountAsync(devoteDto.TargetId)
             };
 
             return Ok(response);

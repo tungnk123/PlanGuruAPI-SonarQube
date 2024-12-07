@@ -66,6 +66,11 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(pd => pd.UserId == userId && pd.PostId == postId);
         }
 
+        public async Task<int> GetPostUpvoteCountAsync(Guid postId)
+        {
+            return await _context.PostUpvotes.CountAsync(pu => pu.PostId == postId);
+        }
+
         public async Task UpdatePostAsync(Post post)
         {
             _context.Posts.Update(post);
@@ -81,6 +86,5 @@ namespace Infrastructure.Persistence.Repository
                 await _context.SaveChangesAsync();
             }
         }
-
     }
 }

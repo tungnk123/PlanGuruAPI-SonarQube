@@ -22,8 +22,8 @@ namespace PlanGuruAPI.Controllers
         private readonly IMapper _mapper;
         private readonly IPlantPostRepository _postRepository;
 
-        public PlantPostController(PlanGuruDBContext context, 
-            ISender mediator, 
+        public PlantPostController(PlanGuruDBContext context,
+            ISender mediator,
             IMapper mapper,
             IPlantPostRepository postRepository)
         {
@@ -84,11 +84,11 @@ namespace PlanGuruAPI.Controllers
             if (existingUpvote != null)
             {
                 await _postRepository.RemovePostUpvoteAsync(existingUpvote);
-                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
                 var response2 = new
                 {
                     status = "success",
-                    message = "Remove upvote post successfully"
+                    message = "Remove upvote post successfully",
+                    numberOfUpvotes = await _postRepository.GetPostUpvoteCountAsync(upvoteDto.TargetId)
                 };
                 return Ok(response2);
             }
@@ -97,7 +97,8 @@ namespace PlanGuruAPI.Controllers
             var response = new
             {
                 status = "success",
-                message = "Upvote post successfully"
+                message = "Upvote post successfully",
+                numberOfUpvotes = await _postRepository.GetPostUpvoteCountAsync(upvoteDto.TargetId)
             };
 
             return Ok(response);
@@ -127,7 +128,8 @@ namespace PlanGuruAPI.Controllers
                 var response2 = new
                 {
                     status = "success",
-                    message = "Remove devote post successfully"
+                    message = "Remove devote post successfully",
+                    numberOfUpvotes = await _postRepository.GetPostUpvoteCountAsync(devoteDto.TargetId)
                 };
                 return Ok(response2);
             }
@@ -136,7 +138,8 @@ namespace PlanGuruAPI.Controllers
             var response = new
             {
                 status = "success",
-                message = "Devote post successfully"
+                message = "Devote post successfully",
+                numberOfUpvotes = await _postRepository.GetPostUpvoteCountAsync(devoteDto.TargetId)
             };
 
             return Ok(response);
