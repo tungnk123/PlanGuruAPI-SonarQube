@@ -50,10 +50,8 @@ namespace BonsaiForum.Grpc
                 ImageUrls = cs.ImageUrls.ToList()
             }));
 
-            // Fetch products by IDs
             var attachedProducts = await _productRepository.GetProductsByIdsAsync(request.ProductIds);
 
-            // Create a new Wiki instance
             var wiki = new Wiki
             {
                 Title = request.Title,
@@ -63,15 +61,13 @@ namespace BonsaiForum.Grpc
                 AttachedProducts = attachedProducts,
                 Status = WikiStatus.Pending,
                 AuthorId = Guid.Parse(request.AuthorId),
-                Contributors = new List<User> { new User { UserId = Guid.Parse(request.AuthorId) } }.Concat(request.Contributors.Select(c => new User { UserId = Guid.Parse(c) })).ToList(),
-                Upvotes = request.Upvotes,
-                Downvotes = request.Downvotes
+                Contributors = [new() { UserId = Guid.Parse(request.AuthorId) }],
+                Upvotes = 0,
+                Downvotes = 0
             };
 
-            // Save to the database
             bool isSaved = await SaveWikiArticleToDatabaseAsync(wiki);
 
-            // Return response
             return new CreateWikiArticleResponse
             {
                 Success = isSaved,

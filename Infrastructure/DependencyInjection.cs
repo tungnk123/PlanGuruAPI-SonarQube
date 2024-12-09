@@ -32,6 +32,7 @@ namespace Infrastructure
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<IWikiRepository, WikiRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             return services;
         }
