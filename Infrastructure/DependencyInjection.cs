@@ -31,6 +31,8 @@ namespace Infrastructure
             services.AddScoped<IPlantPostRepository, PlantPostRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IWikiRepository, WikiRepository>();
+
             return services;
         }
     }

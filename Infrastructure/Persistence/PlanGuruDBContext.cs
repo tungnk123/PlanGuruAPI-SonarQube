@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Entities.ECommerce;
+using Domain.Entities.WikiService;
 using Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,6 +25,9 @@ namespace Infrastructure.Persistence
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatImageAndVideo> ChatImageAndVideos { get; set; }
+        public DbSet<Wiki> Wikis { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ContentSection> ContentSections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +42,7 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new CommentDevoteConfiguration());
             modelBuilder.ApplyConfiguration(new PostShareConfiguration());
             modelBuilder.ApplyConfiguration(new ChatImagesAndVideosConfiguration());
+            modelBuilder.ApplyConfiguration(new ContentSectionConfiguration());
 
             modelBuilder.Entity<Comment>(entity =>
             {
@@ -72,6 +78,14 @@ namespace Infrastructure.Persistence
                       .HasForeignKey(cd => cd.CommentId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Cấu hình quan hệ giữa Wiki và Product: 1-n
+            modelBuilder.Entity<Product>()
+                        .HasOne(p => p.Wiki)
+                        .WithMany(w => w.AttachedProducts)
+                        .HasForeignKey(p => p.WikiId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(modelBuilder);
         }
     }
