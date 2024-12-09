@@ -1,0 +1,33 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "BonsaiForum.Grpc";
+
+package bonsaiforum;
+
+service WikiService {
+    rpc CreateWikiArticle (CreateWikiArticleRequest) returns (CreateWikiArticleResponse);
+}
+
+message CreateWikiArticleRequest {
+    string title = 1;
+    string description = 2;
+    string thumbnailImageUrl = 3;
+    repeated ContentSection contentSections = 4;
+    repeated string productIds = 5; // List of product IDs
+    string authorId = 6;
+    repeated string contributors = 7;
+    int32 upvotes = 8;
+    int32 downvotes = 9;
+}
+
+message ContentSection {
+    string sectionName = 1;
+    string content = 2;
+    repeated string imageUrls = 3;
+}
+
+message CreateWikiArticleResponse {
+    bool success = 1;
+    string message = 2;
+    string articleId = 3;
+}
