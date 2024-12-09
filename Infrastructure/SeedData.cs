@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.ECommerce;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -116,6 +117,21 @@ namespace Infrastructure
                             context.SaveChanges();
                         }
                     }
+
+                    // Seed Products for the first user
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Product product = new Product()
+                        {
+                            Id = Guid.NewGuid(),
+                            SellerId = firstUser.UserId,
+                            ProductName = $"Product {i + 1}",
+                            Description = $"This is the description for product {i + 1}.",
+                            Price = (double)(10.0m * (i + 1))
+                        };
+                        context.Products.Add(product);
+                    }
+                    context.SaveChanges();
                 }
             }
         }

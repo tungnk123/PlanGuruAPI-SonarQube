@@ -19,5 +19,11 @@ namespace Infrastructure.Persistence.Repository
             .Any(id => id == p.Id.ToString()))
                 .ToListAsync();
         }
+
+        // GetFirstNProductsAsync
+        public async Task<List<Product>> GetFirstNProductsAsync(int n)
+        {
+            return await _context.Products.Take(n).ToListAsync();
+        }
     }
 }

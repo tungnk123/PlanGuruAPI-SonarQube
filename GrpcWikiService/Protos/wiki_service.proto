@@ -6,6 +6,8 @@ package bonsaiforum;
 
 service WikiService {
     rpc CreateWikiArticle (CreateWikiArticleRequest) returns (CreateWikiArticleResponse);
+    rpc GetSampleCreateWikiArticleRequest (Empty) returns (GetSampleCreateWikiArticleRequestResponse);
+
 }
 
 message CreateWikiArticleRequest {
@@ -28,3 +30,9 @@ message CreateWikiArticleResponse {
     string message = 2;
     string articleId = 3;
 }
+
+message GetSampleCreateWikiArticleRequestResponse {
+    string jsonString = 1;
+}
+
+message Empty {}

@@ -8,7 +8,7 @@ namespace Domain.Entities
 {
     public class BaseEntity<TId>
     {
-        public TId Id { get; set; }
+        public virtual TId Id { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

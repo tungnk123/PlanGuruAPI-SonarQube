@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities.ECommerce;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class User
+    public class User : BaseEntity<Guid>
     {
         public Guid UserId { get; set; }
+        public override Guid Id
+        {
+            get => UserId;
+            set => UserId = value;
+        }
+
         public string Name { get; set; }
         public string Email { get; set; }
         public string Avatar { get; set; }
@@ -17,6 +24,7 @@ namespace Domain.Entities
         public ICollection<Comment> Comments { get; set; }
         public ICollection<PostDevote> PostDevotes { get; set; }
         public ICollection<PostUpvote> PostUpvotes { get; set; }
-        public ICollection<PostShare> PostShares { get; set; }      
+        public ICollection<PostShare> PostShares { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }

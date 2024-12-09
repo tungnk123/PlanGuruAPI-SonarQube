@@ -41,6 +41,9 @@ namespace Infrastructure.Persistence.Configuration
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId);
 
+            builder.HasMany(p => p.Products)
+                .WithOne(p => p.Seller)
+                .HasForeignKey(p => p.SellerId);
 
         }
     }
