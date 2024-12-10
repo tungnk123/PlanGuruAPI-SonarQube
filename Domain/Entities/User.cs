@@ -26,5 +26,7 @@ namespace Domain.Entities
         public ICollection<PostUpvote> PostUpvotes { get; set; }
         public ICollection<PostShare> PostShares { get; set; }
         public ICollection<Product> Products { get; set; }
+        public ICollection<Vote> Votes { get; set; } // Add this line
+
     }
 }

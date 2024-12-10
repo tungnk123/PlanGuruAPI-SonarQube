@@ -28,6 +28,8 @@ namespace Infrastructure.Persistence
         public DbSet<Wiki> Wikis { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ContentSection> ContentSections { get; set; }
+        public DbSet<Vote> Votes { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -85,6 +87,20 @@ namespace Infrastructure.Persistence
                         .WithMany(w => w.AttachedProducts)
                         .HasForeignKey(p => p.WikiId)
                         .OnDelete(DeleteBehavior.Restrict);
+
+            // Cấu hình quan hệ giữa Vote và User: 1-n
+            modelBuilder.Entity<Vote>(entity =>
+            {
+                entity.HasKey(v => new { v.UserId, v.TargetId, v.TargetType });
+
+                entity.HasOne(v => v.User)
+                      .WithMany(u => u.Votes)
+                      .HasForeignKey(v => v.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            base.OnModelCreating(modelBuilder);
+
 
             base.OnModelCreating(modelBuilder);
         }

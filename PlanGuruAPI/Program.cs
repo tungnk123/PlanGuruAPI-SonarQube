@@ -1,7 +1,10 @@
 using Application;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using PlanGuruAPI.Mapping;
 using Serilog;
 
@@ -18,7 +21,15 @@ namespace PlanGuruAPI
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.MapType<TargetType>(() => new OpenApiSchema
+                {
+                    Type = "integer",
+                    Enum = Enum.GetValues(typeof(TargetType)).Cast<int>().Select(e => (IOpenApiAny)new OpenApiInteger(e)).ToList(),
+                    Description = "Type of target. Values: 0 = Post, 1 = Comment, 2 = Wiki"
+                });
+            });
             builder.Services.AddApplication().AddInfrastructure();
 
             builder.Services.AddAutoMapper(typeof(Program));

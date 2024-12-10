@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlanGuruAPI", "PlanGuruAPI\PlanGuruAPI.csproj", "{5DBBA140-DD99-4B54-B0A0-B72336421D8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcWikiService", "GrpcWikiService\GrpcWikiService.csproj", "{60E8E312-FF32-46EF-BD44-6EB72EB6867A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +35,6 @@ Global
 		{5DBBA140-DD99-4B54-B0A0-B72336421D8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DBBA140-DD99-4B54-B0A0-B72336421D8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DBBA140-DD99-4B54-B0A0-B72336421D8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{60E8E312-FF32-46EF-BD44-6EB72EB6867A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{60E8E312-FF32-46EF-BD44-6EB72EB6867A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{60E8E312-FF32-46EF-BD44-6EB72EB6867A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{60E8E312-FF32-46EF-BD44-6EB72EB6867A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
