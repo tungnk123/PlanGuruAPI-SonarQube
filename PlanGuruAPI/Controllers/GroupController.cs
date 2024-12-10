@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanGuruAPI.DTOs.AdminDTOs;
 using PlanGuruAPI.DTOs.GroupDTOs;
+using PlanGuruAPI.DTOs.PlantPostDTOs;
 
 namespace PlanGuruAPI.Controllers
 {
@@ -24,7 +25,8 @@ namespace PlanGuruAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllGroup()
         {
-            return Ok(await _context.Groups.ToListAsync());
+            var listGroup = await _context.Groups.ToListAsync();
+            return Ok(listGroup.Select(p => new { p.Id,  p.GroupName, p.MasterUserId }).ToList());
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGroupById(Guid id)
@@ -50,10 +52,16 @@ namespace PlanGuruAPI.Controllers
             {
                 return BadRequest("Can't find this group");
             }
-            var listPost = await _context.Posts.Where(p => p.GroupId == groupId && p.IsApproved == false).Include(p => p.PostComments).Include(p => p.PostUpvotes).Include(p => p.PostDevotes).Include(p => p.PostShares).Include(p => p.User).ToListAsync();
+            var listPost = await _context.Posts
+                .Where(p => p.GroupId == groupId && p.IsApproved == false)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostUpvotes)
+                .Include(p => p.PostDevotes)
+                .Include(p => p.PostShares)
+                .Include(p => p.User).ToListAsync();
             return Ok(_mapper.Map<List<PostInGroupDTO>>(listPost));
         }
-        [HttpGet("posts/{groupId}")]
+        [HttpGet("posts/approved/{groupId}")]
         public async Task<IActionResult> GetPostsInGroup(Guid groupId)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -61,7 +69,13 @@ namespace PlanGuruAPI.Controllers
             {
                 return BadRequest("Can't find this group");
             }
-            var listPost = await _context.Posts.Where(p => p.GroupId == groupId && p.IsApproved == true).Include(p => p.PostComments).Include(p => p.PostUpvotes).Include(p => p.PostDevotes).Include(p => p.PostShares).Include(p => User).ToListAsync();
+            var listPost = await _context.Posts
+                .Where(p => p.GroupId == groupId && p.IsApproved == true)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostUpvotes)
+                .Include(p => p.PostDevotes)
+                .Include(p => p.PostShares)
+                .Include(p => p.User).ToListAsync();
             return Ok(_mapper.Map<List<PostInGroupDTO>>(listPost));
         }
         [HttpGet("users/{groupId}")]
@@ -137,7 +151,7 @@ namespace PlanGuruAPI.Controllers
             post.IsApproved = false;
             await _context.Posts.AddAsync(post);    
             await _context.SaveChangesAsync();  
-            return Ok(_mapper.Map<PostReadDTO>(post));
+            return Ok("Post created successfully, wating for admin approve");
         }
     }
 }

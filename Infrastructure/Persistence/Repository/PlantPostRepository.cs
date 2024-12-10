@@ -100,13 +100,25 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task<List<Post>> GetUnApprovedPost()
         {
-            var listPost = await _context.Posts.Where(p => p.IsApproved == false).ToListAsync();
+            var listPost = await _context.Posts.Where(
+                p => p.IsApproved == false)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostDevotes)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostShares)
+                .ToListAsync();
             return listPost;
         }
 
         public async Task<List<Post>> GetApprovedPost()
         {
-            return await _context.Posts.Where(p => p.IsApproved == true).ToListAsync();
+            return await _context.Posts.Where(
+                p => p.IsApproved == true)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostDevotes)
+                .Include(p => p.PostComments)
+                .Include(p => p.PostShares)
+                .ToListAsync();
         }
     }
 }
