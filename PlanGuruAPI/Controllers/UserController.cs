@@ -51,7 +51,7 @@ namespace PlanGuruAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
-            return Ok(await _context.Users.ToListAsync());
+            return Ok(await _context.Users.Select(p => new {p.UserId, p.Name, p.Avatar, p.Email, p.MembershipStatus}).ToListAsync());
         }
     }
 }
