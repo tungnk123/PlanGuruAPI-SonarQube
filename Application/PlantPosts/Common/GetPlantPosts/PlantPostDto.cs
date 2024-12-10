@@ -20,7 +20,6 @@ namespace Application.PlantPosts.Common.GetPlantPosts
             int NumberOfDevote,
             int NumberOfComment,
             int NumberOfShare,
-            int NumberOfPage,
             string CreatedDate
         );
 }

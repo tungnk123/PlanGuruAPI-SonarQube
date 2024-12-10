@@ -1,28 +1,29 @@
 ﻿using Application.Common.Interface.Persistence;
 using Application.PlantPosts.Common.GetPlantPosts;
+using Application.Votes;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.PlantPosts.Query.GetPlantPosts
 {
-    public class GetPlantPostsQueryHandler : IRequestHandler<GetPlantPostsQuery, List<PlantPostDto>>
+    public class GetPlantPostsQueryHandler : IRequestHandler<GetPlantPostsQuery, GetPlantPostResult>
     {
         private readonly IPlantPostRepository _postRepo;
+        private readonly VoteStrategyFactory _voteStrategyFactory;
 
-        public GetPlantPostsQueryHandler(IPlantPostRepository postRepo)
+        public GetPlantPostsQueryHandler(IPlantPostRepository postRepo, VoteStrategyFactory voteStrategyFactory)
         {
             _postRepo = postRepo;
+            _voteStrategyFactory = voteStrategyFactory;
         }
 
-        public async Task<List<PlantPostDto>> Handle(GetPlantPostsQuery request, CancellationToken cancellationToken)
+        public async Task<GetPlantPostResult> Handle(GetPlantPostsQuery request, CancellationToken cancellationToken)
         {
             var skip = (request.Page - 1) * request.Limit;
 
             var baseQuery = _postRepo.QueryPosts()
                                      .Include(p => p.User)
-                                     .Include(p => p.PostUpvotes)
-                                     .Include(p => p.PostDevotes)
                                      .Include(p => p.PostComments)
                                      .Include(p => p.PostShares);
 
@@ -33,44 +34,55 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 query = query.Where(p => p.Tag == request.Tag);
             }
 
+            var posts = await query.Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
+
+            var postDtos = new List<PlantPostDto>();
+
+            foreach (var post in posts)
+            {
+                var postVoteStrategy = _voteStrategyFactory.GetStrategy(TargetType.Post.ToString());
+                var upvoteCount = await postVoteStrategy.GetVoteCountAsync(post.Id, TargetType.Post, true);
+                var devoteCount = await postVoteStrategy.GetVoteCountAsync(post.Id, TargetType.Post, false);
+
+                var postDto = new PlantPostDto(
+                    post.Id,
+                    post.UserId,
+                    post.User.Name,
+                    post.User.Avatar,
+                    post.Title,
+                    post.Description,
+                    post.ImageUrl,
+                    post.Tag,
+                    post.Background,
+                    upvoteCount,
+                    devoteCount,
+                    post.PostComments.Count,
+                    post.PostShares.Count,
+                    FormatCreatedAt(post.CreatedAt)
+                );
+
+                postDtos.Add(postDto);
+            }
+
             switch (request.Filter?.ToLower())
             {
                 case "trending":
-                    var lastWeek = DateTime.UtcNow.AddDays(-7);
-                    query = query.OrderByDescending(p => p.PostUpvotes.Count + p.PostDevotes.Count + p.PostComments.Count)
-                                 .Where(p => p.CreatedAt >= lastWeek);
+                    postDtos = postDtos.OrderByDescending(p => p.NumberOfUpvote + p.NumberOfDevote + p.NumberOfComment).ToList();
                     break;
                 case "upvote":
-                    query = query.OrderByDescending(p => p.PostUpvotes.Count);
+                    postDtos = postDtos.OrderByDescending(p => p.NumberOfUpvote).ToList();
                     break;
                 case "time":
                 default:
-                    query = query.OrderByDescending(p => p.CreatedAt);
+                    postDtos = postDtos.OrderByDescending(p => p.CreatedDate).ToList();
                     break;
             }
 
             var totalPosts = await query.CountAsync(cancellationToken);
             var totalPages = (int)Math.Ceiling(totalPosts / (double)request.Limit);
 
-            var posts = await query.Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
+            return new GetPlantPostResult(postDtos, totalPages);
 
-            return posts.Select(post => new PlantPostDto(
-                post.Id,
-                post.UserId,
-                post.User.Name,
-                post.User.Avatar,
-                post.Title,
-                post.Description,
-                post.ImageUrl,
-                post.Tag,
-                post.Background,
-                post.PostUpvotes.Count,
-                post.PostDevotes.Count,
-                post.PostComments.Count,
-                post.PostShares.Count,
-                totalPages,
-                FormatCreatedAt(post.CreatedAt)
-            )).ToList();
         }
 
         public static string FormatCreatedAt(DateTime createdAt)
