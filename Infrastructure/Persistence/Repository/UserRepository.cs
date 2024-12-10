@@ -66,7 +66,8 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task<User?> GetFirstUserAsync()
         {
-            return await _context.Users.FirstOrDefaultAsync();
+            var user = await _context.Users.FirstOrDefaultAsync();
+            return user;
         }
     }
 }

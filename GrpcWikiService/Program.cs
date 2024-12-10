@@ -17,8 +17,6 @@ namespace GrpcWikiService
             // Add repository and database context services
             builder.Services.AddApplication().AddInfrastructure();
 
-            // Add other necessary services (e.g., logging, caching)
-            builder.Services.AddMemoryCache(); // For in-memory caching
             //builder.Services.AddSingleton<ICacheService, CacheService>(); // Example custom cache service
 
             var app = builder.Build();
@@ -27,6 +25,7 @@ namespace GrpcWikiService
             app.MapGrpcService<WikiServiceImpl>();
             app.MapGrpcService<GreeterService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+            app.seedData();
 
             app.Run();
         }

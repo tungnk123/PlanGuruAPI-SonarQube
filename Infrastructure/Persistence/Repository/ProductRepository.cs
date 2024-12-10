@@ -15,15 +15,37 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task<List<Product>> GetProductsByIdsAsync(IEnumerable<string> productIds)
         {
-            return await _context.Products.Where(p => productIds
-            .Any(id => id == p.Id.ToString()))
-                .ToListAsync();
+            try
+            {
+                var productGuids = productIds.Select(id => Guid.Parse(id)).ToList();
+
+                var listP = await _context.Products
+                    .Where(p => productGuids.Contains(p.Id))
+                    .ToListAsync();
+
+                return listP;
+
+            }
+            catch(Exception e)
+            {
+                return [];
+            }
         }
 
         // GetFirstNProductsAsync
         public async Task<List<Product>> GetFirstNProductsAsync(int n)
         {
-            return await _context.Products.Take(n).ToListAsync();
+            try
+            {
+                var listP = await _context.Products
+                    .ToListAsync();
+
+                return listP;
+            }
+            catch (Exception e)
+            {
+                return [];
+            }
         }
     }
 }

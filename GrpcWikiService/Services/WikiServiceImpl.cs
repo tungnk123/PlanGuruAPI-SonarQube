@@ -95,14 +95,12 @@ namespace BonsaiForum.Grpc
 
         public override async Task<GetSampleCreateWikiArticleRequestResponse> GetSampleCreateWikiArticleRequest(Empty request, ServerCallContext context)
         {
-            // Get a real user ID
             var author = await _userRepository.GetFirstUserAsync();
             if (author == null)
             {
                 throw new Exception("No users found in the database.");
             }
 
-            // Get real product IDs
             var products = await _productRepository.GetFirstNProductsAsync(2);
             if (products.Count < 2)
             {
