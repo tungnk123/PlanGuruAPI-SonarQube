@@ -81,7 +81,8 @@ namespace Infrastructure
                                 Id = Guid.NewGuid(),
                                 PostId = firstPost.Id,
                                 UserId = firstUser.UserId,
-                                Message = $"This is comment {i + 1} on the first post."
+                                Message = $"This is comment {i + 1} on the first post.",
+                                CreatedAt = DateTime.Now
                             };
                             context.Comments.Add(comment);
                         }

@@ -1,5 +1,6 @@
 ﻿using Application.Comments.Command;
 using Application.Common.Interface.Persistence;
+using Application.PlantPosts.Query.GetPlantPosts;
 using Application.Votes;
 using Domain.Entities;
 using MediatR;
@@ -91,6 +92,7 @@ namespace PlanGuruAPI.Controllers
                 var commentVoteStrategy = _voteStrategyFactory.GetStrategy(TargetType.Comment.ToString());
                 var upvoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, true);
                 var devoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, false);
+                var createdAt = GetPlantPostsQueryHandler.FormatCreatedAt(comment.CreatedAt);
 
                 var commentDto = new CommentDto
                 {
@@ -99,7 +101,7 @@ namespace PlanGuruAPI.Controllers
                     Name = comment.User.Name,
                     Avatar = comment.User.Avatar,
                     Message = comment.Message,
-                    CreatedAt = comment.CreatedAt,
+                    CreatedAt = createdAt,
                     NumberOfUpvote = upvoteCount,
                     NumberOfDevote = devoteCount
                 };

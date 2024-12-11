@@ -10,6 +10,7 @@
         public int NumberOfUpvote { get; set; }
         public int NumberOfDevote { get; set; }
         public List<CommentDto> ReplyComment { get; set; } = new List<CommentDto>();
-        public DateTime CreatedAt { get; set; }
+        public string? CreatedAt { get; set; }
+        public string? UpdatedAt { get; set; } 
     }
 }

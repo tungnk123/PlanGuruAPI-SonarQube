@@ -28,6 +28,7 @@ namespace Application.Comments.Command
                 PostId = request.PostId,
                 UserId = request.UserId,
                 Message = request.Message,
+                CreatedAt = DateTime.UtcNow
                 // Initialize other properties if needed
             };
 
