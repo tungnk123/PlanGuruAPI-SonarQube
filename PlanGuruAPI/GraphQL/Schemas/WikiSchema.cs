@@ -6,10 +6,10 @@ namespace PlanGuruAPI.GraphQL.Schemas
 {
     public class WikiSchema : Schema
     {
-        public WikiSchema(IServiceProvider provider) : base(provider)
+        public WikiSchema(WikiQuery query, WikiMutation mutation)
         {
-            Query = provider.GetRequiredService<WikiQuery>();
-            Mutation = provider.GetRequiredService<WikiMutation>();
+            Query = query;
+            Mutation = mutation;
         }
     }
 }

@@ -9,15 +9,24 @@ namespace PlanGuruAPI.GraphQL.Queries
     {
         public WikiQuery(IWikiRepository wikiRepository)
         {
-            Field<WikiType>(
+            FieldAsync<WikiType>(
                 "wiki",
                 arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "id" }),
-                resolve: context => wikiRepository.GetByIdAsync(context.GetArgument<Guid>("id"))
+                resolve: async context =>
+                {
+                    var wiki = await wikiRepository.GetByIdAsync(context.GetArgument<Guid>("id"));
+                    return wiki;
+
+                }
             );
 
-            Field<ListGraphType<WikiType>>(
+            FieldAsync<ListGraphType<WikiType>>(
                 "wikis",
-                resolve: context => wikiRepository.GetAllAsync()
+                resolve: async context => {
+                    var wikis = await wikiRepository.GetAllAsync();
+                    return wikis;
+
+                }
             );
         }
     }

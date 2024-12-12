@@ -50,15 +50,12 @@ namespace PlanGuruAPI
             builder.Services.AddAutoMapper(typeof(Program));
 
             // Add GraphQL services
-            builder.Services.AddScoped<IWikiRepository, WikiRepository>();
-            builder.Services.AddScoped<IProductRepository, ProductRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<WikiType>();
             builder.Services.AddScoped<ProductType>();
             builder.Services.AddScoped<ContentSectionType>();
             builder.Services.AddScoped<WikiQuery>();
             builder.Services.AddScoped<WikiMutation>();
-            builder.Services.AddScoped<ISchema, WikiSchema>();
+            builder.Services.AddScoped<WikiSchema>();
 
             var app = builder.Build();
 
@@ -75,7 +72,7 @@ namespace PlanGuruAPI
             app.seedData();
 
             // graphql
-            //app.UseGraphQL<ISchema>();
+            app.UseGraphQL<WikiSchema>();
             app.UseGraphQLGraphiQL("/ui/graphql");
 
             app.MapControllers();
