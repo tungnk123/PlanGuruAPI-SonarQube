@@ -49,5 +49,17 @@ namespace Application.Votes
         {
             return await _voteRepository.GetVoteCountAsync(targetId, targetType, isUpvote);
         }
+
+        public async Task<bool> HasUpvotedAsync(Guid userId, Guid targetId)
+        {
+            var vote = await _voteRepository.GetVoteAsync(userId, targetId, TargetType.Post);
+            return vote != null && vote.IsUpvote;
+        }
+
+        public async Task<bool> HasDevotedAsync(Guid userId, Guid targetId)
+        {
+            var vote = await _voteRepository.GetVoteAsync(userId, targetId, TargetType.Post);
+            return vote != null && !vote.IsUpvote;
+        }
     }
 }

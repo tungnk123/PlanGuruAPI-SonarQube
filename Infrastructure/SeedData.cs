@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Interface.Persistence;
+using Domain.Entities;
 using Domain.Entities.ECommerce;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,7 @@ namespace Infrastructure
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<PlanGuruDBContext>();
+                var voteRepository = serviceScope.ServiceProvider.GetService<IVoteRepository>();
                 Console.WriteLine("Seeding Data");
 
                 // Seed Users
@@ -96,26 +98,28 @@ namespace Infrastructure
                             // Seed Upvotes for the first comment by the first two users
                             foreach (var user in firstTwoUsers)
                             {
-                                CommentUpvote commentUpvote = new CommentUpvote()
+                                var commentUpvote = new Vote
                                 {
-                                    CommentId = firstComment.Id,
-                                    UserId = user.UserId
+                                    UserId = user.UserId,
+                                    TargetId = firstComment.Id,
+                                    TargetType = TargetType.Comment,
+                                    IsUpvote = true
                                 };
-                                context.CommentUpvotes.Add(commentUpvote);
+                                voteRepository.AddVoteAsync(commentUpvote).Wait();
                             }
 
                             // Seed Upvotes for the first post by the first two users
                             foreach (var user in firstTwoUsers)
                             {
-                                PostUpvote postUpvote = new PostUpvote()
+                                var postUpvote = new Vote
                                 {
-                                    PostId = firstPost.Id,
-                                    UserId = user.UserId
+                                    UserId = user.UserId,
+                                    TargetId = firstPost.Id,
+                                    TargetType = TargetType.Post,
+                                    IsUpvote = true
                                 };
-                                context.PostUpvotes.Add(postUpvote);
+                                voteRepository.AddVoteAsync(postUpvote).Wait();
                             }
-
-                            context.SaveChanges();
                         }
                     }
 

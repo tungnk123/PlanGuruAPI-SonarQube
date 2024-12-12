@@ -81,7 +81,7 @@ namespace PlanGuruAPI.Controllers
         }
 
         [HttpGet("posts/{postId}/comments")]
-        public async Task<IActionResult> GetCommentsByPostId(Guid postId, [FromQuery] Guid? parentCommentId = null)
+        public async Task<IActionResult> GetCommentsByPostId(Guid postId, [FromQuery] Guid userId, [FromQuery] Guid? parentCommentId = null)
         {
             var comments = await _commentRepository.GetCommentsByPostIdAsync(postId, parentCommentId);
 
@@ -92,6 +92,10 @@ namespace PlanGuruAPI.Controllers
                 var commentVoteStrategy = _voteStrategyFactory.GetStrategy(TargetType.Comment.ToString());
                 var upvoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, true);
                 var devoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, false);
+
+                var hasUpvoted = await commentVoteStrategy.HasUpvotedAsync(userId, comment.Id);
+                var hasDevoted = await commentVoteStrategy.HasDevotedAsync(userId, comment.Id);
+
                 var createdAt = GetPlantPostsQueryHandler.FormatCreatedAt(comment.CreatedAt);
 
                 var commentDto = new CommentDto
@@ -103,7 +107,9 @@ namespace PlanGuruAPI.Controllers
                     Message = comment.Message,
                     CreatedAt = createdAt,
                     NumberOfUpvote = upvoteCount,
-                    NumberOfDevote = devoteCount
+                    NumberOfDevote = devoteCount,
+                    HasUpvoted = hasUpvoted, 
+                    HasDevoted = hasDevoted  
                 };
 
                 commentDtos.Add(commentDto);

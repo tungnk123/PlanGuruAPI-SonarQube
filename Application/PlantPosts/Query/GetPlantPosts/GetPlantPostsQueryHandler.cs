@@ -44,6 +44,9 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 var upvoteCount = await postVoteStrategy.GetVoteCountAsync(post.Id, TargetType.Post, true);
                 var devoteCount = await postVoteStrategy.GetVoteCountAsync(post.Id, TargetType.Post, false);
 
+                var hasUpvoted = await postVoteStrategy.HasUpvotedAsync(request.UserId, post.Id);
+                var hasDevoted = await postVoteStrategy.HasDevotedAsync(request.UserId, post.Id);
+
                 var postDto = new PlantPostDto(
                     post.Id,
                     post.UserId,
@@ -58,7 +61,9 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                     devoteCount,
                     post.PostComments.Count,
                     post.PostShares.Count,
-                    FormatCreatedAt(post.CreatedAt)
+                    FormatCreatedAt(post.CreatedAt),
+                    hasUpvoted, // Thêm thông tin này
+                    hasDevoted  // Thêm thông tin này
                 );
 
                 postDtos.Add(postDto);
@@ -82,7 +87,6 @@ namespace Application.PlantPosts.Query.GetPlantPosts
             var totalPages = (int)Math.Ceiling(totalPosts / (double)request.Limit);
 
             return new GetPlantPostResult(postDtos, totalPages);
-
         }
 
         public static string FormatCreatedAt(DateTime createdAt)

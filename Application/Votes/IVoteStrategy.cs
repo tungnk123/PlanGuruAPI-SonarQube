@@ -11,5 +11,7 @@ namespace Application.Votes
     {
         Task HandleVoteAsync(Guid userId, Guid targetId, bool isUpvote);
         Task<int> GetVoteCountAsync(Guid targetId, TargetType targetType, bool isUpvote);
+        Task<bool> HasUpvotedAsync(Guid userId, Guid targetId);
+        Task<bool> HasDevotedAsync(Guid userId, Guid targetId);
     }
 }
