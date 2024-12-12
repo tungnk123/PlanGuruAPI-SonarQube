@@ -10,6 +10,9 @@ namespace Application.Common.Interface.Persistence
     public interface IWikiRepository
     {
         Task AddWikiAsync(Wiki wiki);
-        // Các phương thức khác nếu cần
+        Task<Wiki?> GetByIdAsync(Guid id);
+        Task UpdateWikiAsync(Wiki wiki, List<Guid> productIds);
+
+        Task<List<Wiki>> GetAllAsync();
     }
 }
