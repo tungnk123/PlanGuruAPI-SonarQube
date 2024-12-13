@@ -47,6 +47,13 @@ namespace PlanGuruAPI.Controllers
         {
             return Ok(await _postRepository.GetApprovedPost());
         }
+        [HttpGet("plantPostUserCount")]
+        public async Task<IActionResult> GetPlantPostUserCount()
+        {
+            var users = await _context.Users.ToListAsync();
+            var posts = await _context.Posts.ToListAsync();
+            return Ok(new { numberOfUser = users.Count, numberOfPost = posts.Count });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetPosts([FromQuery] int limit = 9, [FromQuery] int page = 1, [FromQuery] string? tag = null, [FromQuery] string? filter = "time")
