@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Entities.ECommerce;
+using Domain.Entities.WikiService;
 using Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -22,6 +24,10 @@ namespace Infrastructure.Persistence
         public DbSet<CommentDevote> CommentDevotes { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Wiki> Wikis { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ContentSection> ContentSections { get; set; }
+        public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupUser> GroupUsers { get; set; }
 
@@ -35,6 +41,7 @@ namespace Infrastructure.Persistence
             modelBuilder.ApplyConfiguration(new CommentUpvoteConfiguration());
             modelBuilder.ApplyConfiguration(new CommentDevoteConfiguration());
             modelBuilder.ApplyConfiguration(new PostShareConfiguration());
+            modelBuilder.ApplyConfiguration(new ContentSectionConfiguration());
             modelBuilder.ApplyConfiguration(new GroupConfiguration());  
             modelBuilder.ApplyConfiguration(new GroupUserConfiguration());  
 
@@ -50,7 +57,7 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<Comment>(entity =>
             {
                 // Thiết lập khóa chính cho Comment
-                entity.HasKey(c => c.CommentId);
+                entity.HasKey(c => c.Id);
 
                 // Quan hệ 1-n với User (1 User có nhiều Comment)
                 entity.HasOne(c => c.User)
@@ -81,6 +88,28 @@ namespace Infrastructure.Persistence
                       .HasForeignKey(cd => cd.CommentId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Cấu hình quan hệ giữa Wiki và Product: 1-n
+            modelBuilder.Entity<Product>()
+                        .HasOne(p => p.Wiki)
+                        .WithMany(w => w.AttachedProducts)
+                        .HasForeignKey(p => p.WikiId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            // Cấu hình quan hệ giữa Vote và User: 1-n
+            modelBuilder.Entity<Vote>(entity =>
+            {
+                entity.HasKey(v => new { v.UserId, v.TargetId, v.TargetType });
+
+                entity.HasOne(v => v.User)
+                      .WithMany(u => u.Votes)
+                      .HasForeignKey(v => v.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            base.OnModelCreating(modelBuilder);
+
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -119,5 +119,9 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(cd => cd.UserId == userId && cd.CommentId == commentId);
         }
 
+        public async Task<int> GetCommentUpvoteCountAsync(Guid commentId)
+        {
+            return await _context.CommentUpvotes.CountAsync(cu => cu.CommentId == commentId);
+        }
     }
 }

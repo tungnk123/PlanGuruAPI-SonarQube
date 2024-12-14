@@ -1,8 +1,11 @@
 ﻿using Application.Comments.Command;
 using Application.Common.Interface.Persistence;
+using Application.PlantPosts.Query.GetPlantPosts;
+using Application.Votes;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PlanGuruAPI.DTOs;
 using PlanGuruAPI.DTOs.CommentDTOs;
 
 namespace PlanGuruAPI.Controllers
@@ -13,11 +16,13 @@ namespace PlanGuruAPI.Controllers
     {
         private readonly ISender _mediator;
         private readonly ICommentRepository _commentRepository;
+        private readonly VoteStrategyFactory _voteStrategyFactory;
 
-        public CommentsController(ISender mediator, ICommentRepository commentRepository)
+        public CommentsController(ISender mediator, ICommentRepository commentRepository, VoteStrategyFactory voteStrategyFactory)
         {
             _mediator = mediator;
             _commentRepository = commentRepository;
+            _voteStrategyFactory = voteStrategyFactory;
         }
 
         [HttpPost]
@@ -76,20 +81,39 @@ namespace PlanGuruAPI.Controllers
         }
 
         [HttpGet("posts/{postId}/comments")]
-        public async Task<IActionResult> GetCommentsByPostId(Guid postId, [FromQuery] Guid? parentCommentId = null)
+        public async Task<IActionResult> GetCommentsByPostId(Guid postId, [FromQuery] Guid userId, [FromQuery] Guid? parentCommentId = null)
         {
             var comments = await _commentRepository.GetCommentsByPostIdAsync(postId, parentCommentId);
-            var commentDtos = comments.Select(c => new CommentDto
+
+            var commentDtos = new List<CommentDto>();
+
+            foreach (var comment in comments)
             {
-                CommentId = c.CommentId,
-                UserId = c.UserId,
-                Name = c.User.Name,
-                Avatar = c.User.Avatar,
-                Message = c.Message,
-                NumberOfUpvote = c.CommentUpvotes.Count,
-                NumberOfDevote = c.CommentDevotes.Count,
-                ReplyComment = new List<CommentDto>()
-            }).ToList();
+                var commentVoteStrategy = _voteStrategyFactory.GetStrategy(TargetType.Comment.ToString());
+                var upvoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, true);
+                var devoteCount = await commentVoteStrategy.GetVoteCountAsync(comment.Id, TargetType.Comment, false);
+
+                var hasUpvoted = await commentVoteStrategy.HasUpvotedAsync(userId, comment.Id);
+                var hasDevoted = await commentVoteStrategy.HasDevotedAsync(userId, comment.Id);
+
+                var createdAt = GetPlantPostsQueryHandler.FormatCreatedAt(comment.CreatedAt);
+
+                var commentDto = new CommentDto
+                {
+                    CommentId = comment.Id,
+                    UserId = comment.UserId,
+                    Name = comment.User.Name,
+                    Avatar = comment.User.Avatar,
+                    Message = comment.Message,
+                    CreatedAt = createdAt,
+                    NumberOfUpvote = upvoteCount,
+                    NumberOfDevote = devoteCount,
+                    HasUpvoted = hasUpvoted, 
+                    HasDevoted = hasDevoted  
+                };
+
+                commentDtos.Add(commentDto);
+            }
 
             return Ok(commentDtos);
         }
@@ -97,79 +121,75 @@ namespace PlanGuruAPI.Controllers
         [HttpPost("upvote")]
         public async Task<IActionResult> UpvoteComment([FromBody] UpvoteDto upvoteDto)
         {
-            var commentUpvote = new CommentUpvote
+            var voteDto = new VoteDto
             {
                 UserId = upvoteDto.UserId,
-                CommentId = upvoteDto.TargetId
+                TargetId = upvoteDto.TargetId,
+                TargetType = TargetType.Comment,
+                IsUpvote = true
             };
 
-            var existingDevote = await _commentRepository.GetCommentDevoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+            var strategy = _voteStrategyFactory.GetStrategy(voteDto.TargetType.ToString());
+            await strategy.HandleVoteAsync(voteDto.UserId, voteDto.TargetId, voteDto.IsUpvote);
 
-            if (existingDevote != null)
-            {
-                await _commentRepository.RemoveCommentDevoteAsync(existingDevote);
-            }
+            var upvoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, true);
+            var devoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, false);
 
-            var existingUpvote = await _commentRepository.GetCommentUpvoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
-
-            if (existingUpvote != null)
-            {
-                await _commentRepository.RemoveCommentUpvoteAsync(existingUpvote);
-                var response2 = new
-                {
-                    status = "success",
-                    message = "Remove upvote comment successfully"
-                };
-                return Ok(response2);
-            }
-
-            await _commentRepository.AddCommentUpvoteAsync(commentUpvote);
-            var response = new
-            {
-                status = "success",
-                message = "Upvote comment successfully"
-            };
-
-            return Ok(response);
+            return Ok(new { status = "success", message = "Upvote processed successfully", numberOfUpvotes = upvoteCount, numberOfDevotes = devoteCount });
         }
 
         [HttpPost("devote")]
         public async Task<IActionResult> DevoteComment([FromBody] DevoteDto devoteDto)
         {
-            var commentDevote = new CommentDevote
+            var voteDto = new VoteDto
             {
                 UserId = devoteDto.UserId,
-                CommentId = devoteDto.TargetId
+                TargetId = devoteDto.TargetId,
+                TargetType = TargetType.Comment,
+                IsUpvote = false
             };
 
-            var existingUpvote = await _commentRepository.GetCommentUpvoteAsync(devoteDto.UserId, devoteDto.TargetId);
+            var strategy = _voteStrategyFactory.GetStrategy(voteDto.TargetType.ToString());
+            await strategy.HandleVoteAsync(voteDto.UserId, voteDto.TargetId, voteDto.IsUpvote);
 
-            if (existingUpvote != null)
+            var upvoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, true);
+            var devoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, false);
+
+            return Ok(new { status = "success", message = "Devote processed successfully", numberOfUpvotes = upvoteCount, numberOfDevotes = devoteCount });
+        }
+
+        [HttpPost("reply")]
+        public async Task<IActionResult> ReplyComment([FromBody] ReplyCommentDto replyCommentDto)
+        {
+            var parentComment = await _commentRepository.GetCommentByIdAsync(replyCommentDto.ParentCommentId);
+            if (parentComment == null)
             {
-                await _commentRepository.RemoveCommentUpvoteAsync(existingUpvote);
+                return NotFound(new { message = "Parent comment not found" });
             }
 
-            var existingDevote = await _commentRepository.GetCommentDevoteAsync(devoteDto.UserId, devoteDto.TargetId);
-
-            if (existingDevote != null)
+            // Check if the parent comment is already a reply to another comment
+            if (parentComment.ParentCommentId != Guid.Empty)
             {
-                await _commentRepository.RemoveCommentDevoteAsync(existingDevote);
-                var response2 = new
+                var grandParentComment = await _commentRepository.GetCommentByIdAsync(parentComment.ParentCommentId);
+                if (grandParentComment?.ParentCommentId != Guid.Empty)
                 {
-                    status = "success",
-                    message = "Remove devote comment successfully"
-                };
-                return Ok(response2);
+                    return BadRequest(new { message = "Cannot reply to a comment more than 2 levels deep" });
+                }
             }
 
-            await _commentRepository.AddCommentDevoteAsync(commentDevote);
-            var response = new
+            var replyComment = new Comment
             {
-                status = "success",
-                message = "Devote comment successfully"
+                Id = Guid.NewGuid(),
+                UserId = replyCommentDto.UserId,
+                PostId = parentComment.PostId,
+                ParentCommentId = replyCommentDto.ParentCommentId,
+                Message = replyCommentDto.Message,
+                CreatedAt = DateTime.UtcNow
             };
 
-            return Ok(response);
+            await _commentRepository.AddCommentAsync(replyComment);
+
+            return Ok(new { message = "Reply comment created successfully", replyCommentId = replyComment.Id });
         }
     }
 }

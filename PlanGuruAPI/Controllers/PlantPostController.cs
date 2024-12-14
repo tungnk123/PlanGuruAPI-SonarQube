@@ -2,12 +2,14 @@
 using Application.PlantPosts.Command.CreatePost;
 using Application.PlantPosts.Query.GetPlantPosts;
 using Application.PlantPosts.Query.GetTags;
+using Application.Votes;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PlanGuruAPI.DTOs;
 using PlanGuruAPI.DTOs.CommentDTOs;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
 
@@ -21,17 +23,19 @@ namespace PlanGuruAPI.Controllers
         private readonly ISender _mediator;
         private readonly IMapper _mapper;
         private readonly IPlantPostRepository _postRepository;
+        private readonly VoteStrategyFactory _voteStrategyFactory;
 
-        public PlantPostController(PlanGuruDBContext context, 
-            ISender mediator, 
+        public PlantPostController(PlanGuruDBContext context,
+            ISender mediator,
             IMapper mapper,
-            IPlantPostRepository postRepository)
+            IPlantPostRepository postRepository,
+            VoteStrategyFactory voteStrategyFactory)
         {
             _context = context;
             _mediator = mediator;
             _mapper = mapper;
             _postRepository = postRepository;
-
+            _voteStrategyFactory = voteStrategyFactory;
         }
 
         [HttpPost]
@@ -56,9 +60,9 @@ namespace PlanGuruAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPosts([FromQuery] int limit = 9, [FromQuery] int page = 1, [FromQuery] string? tag = null, [FromQuery] string? filter = "time")
+        public async Task<IActionResult> GetPosts([FromQuery] Guid userId, [FromQuery] int limit = 9, [FromQuery] int page = 1, [FromQuery] string? tag = null, [FromQuery] string? filter = "time")
         {
-            var query = new GetPlantPostsQuery(limit, page, tag, filter);
+            var query = new GetPlantPostsQuery(limit, page, userId, tag, filter);
             var result = await _mediator.Send(query);
             return Ok(result);
         }
@@ -73,80 +77,41 @@ namespace PlanGuruAPI.Controllers
         [HttpPost("upvote")]
         public async Task<IActionResult> UpvotePost([FromBody] UpvoteDto upvoteDto)
         {
-            var postUpvote = new PostUpvote
+            var voteDto = new VoteDto
             {
                 UserId = upvoteDto.UserId,
-                PostId = upvoteDto.TargetId
+                TargetId = upvoteDto.TargetId,
+                TargetType = TargetType.Post,
+                IsUpvote = true
             };
 
-            var existingDevote = await _postRepository.GetPostDevoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
+            var strategy = _voteStrategyFactory.GetStrategy(voteDto.TargetType.ToString());
+            await strategy.HandleVoteAsync(voteDto.UserId, voteDto.TargetId, voteDto.IsUpvote);
 
-            if (existingDevote != null)
-            {
-                await _postRepository.RemovePostDevoteAsync(existingDevote);
-            }
+            var upvoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, true);
+            var devoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, false);
 
-            var existingUpvote = await _postRepository.GetPostUpvoteAsync(upvoteDto.UserId, upvoteDto.TargetId);
-
-            if (existingUpvote != null)
-            {
-                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
-                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
-                var response2 = new
-                {
-                    status = "success",
-                    message = "Remove upvote post successfully"
-                };
-                return Ok(response2);
-            }
-
-            await _postRepository.AddPostUpvoteAsync(postUpvote);
-            var response = new
-            {
-                status = "success",
-                message = "Upvote post successfully"
-            };
-
-            return Ok(response);
+            return Ok(new { status = "success", message = "Upvote processed successfully", numberOfUpvotes = upvoteCount, numberOfDevotes = devoteCount });
         }
 
         [HttpPost("devote")]
         public async Task<IActionResult> DevotePost([FromBody] DevoteDto devoteDto)
         {
-            var postDevote = new PostDevote
+            var voteDto = new VoteDto
             {
                 UserId = devoteDto.UserId,
-                PostId = devoteDto.TargetId
+                TargetId = devoteDto.TargetId,
+                TargetType = TargetType.Post,
+                IsUpvote = false
             };
 
-            var existingUpvote = await _postRepository.GetPostUpvoteAsync(devoteDto.UserId, devoteDto.TargetId);
+            var strategy = _voteStrategyFactory.GetStrategy(voteDto.TargetType.ToString());
+            await strategy.HandleVoteAsync(voteDto.UserId, voteDto.TargetId, voteDto.IsUpvote);
 
-            if (existingUpvote != null)
-            {
-                await _postRepository.RemovePostUpvoteAsync(existingUpvote);
-            }
+            var upvoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, true);
+            var devoteCount = await strategy.GetVoteCountAsync(voteDto.TargetId, voteDto.TargetType, false);
 
-            var existingDevote = await _postRepository.GetPostDevoteAsync(devoteDto.UserId, devoteDto.TargetId);
-
-            if (existingDevote != null)
-            {
-                await _postRepository.RemovePostDevoteAsync(existingDevote);
-                var response2 = new
-                {
-                    status = "success",
-                    message = "Remove devote post successfully"
-                };
-                return Ok(response2);
-            }
-
-            await _postRepository.AddPostDevoteAsync(postDevote);
-            var response = new
-            {
-                status = "success",
-                message = "Devote post successfully"
-            };
-
-            return Ok(response);
+            return Ok(new { status = "success", message = "Devote processed successfully", numberOfUpvotes = upvoteCount, numberOfDevotes = devoteCount });
         }
     }
 }

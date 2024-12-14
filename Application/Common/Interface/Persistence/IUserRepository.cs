@@ -16,5 +16,7 @@ namespace Application.Common.Interface.Persistence
         Task UpdateAsync(User user);
         Task DeleteAsync(Guid userId);
         Task<User?> Login(string email, string password);
+        // GetFirstUserAsync
+        Task<User?> GetFirstUserAsync();
     }
 }

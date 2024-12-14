@@ -7,8 +7,10 @@
         public string Name { get; set; }
         public string Avatar { get; set; }
         public string Message { get; set; }
+        public string CreatedAt { get; set; }
         public int NumberOfUpvote { get; set; }
         public int NumberOfDevote { get; set; }
-        public List<CommentDto> ReplyComment { get; set; } = new List<CommentDto>();
+        public bool HasUpvoted { get; set; } // Thêm thuộc tính này
+        public bool HasDevoted { get; set; } // Thêm thuộc tính này
     }
 }

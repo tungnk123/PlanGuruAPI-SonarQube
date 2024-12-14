@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interface.Persistence;
+using Application.Votes;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace Infrastructure
             });
 
             services.AddPersistence();
+            services.AddVoteStrategy();
 
             return services;
         }
@@ -31,7 +33,21 @@ namespace Infrastructure
             services.AddScoped<IPlantPostRepository, PlantPostRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IWikiRepository, WikiRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IVoteRepository, VoteRepository>();
+
             return services;
         }
+
+        // register for strategy pattern
+        public static IServiceCollection AddVoteStrategy(this IServiceCollection services)
+        {
+            services.AddScoped<VoteStrategyFactory>();
+            services.AddScoped<PostVoteStrategy>();
+            services.AddScoped<CommentVoteStrategy>();
+            return services;
+        }
+
     }
 }

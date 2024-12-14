@@ -17,5 +17,6 @@ namespace Application.Common.Interface.Persistence
         Task RemoveCommentDevoteAsync(CommentDevote commentDevote);
         Task<CommentUpvote> GetCommentUpvoteAsync(Guid userId, Guid commentId);
         Task<CommentDevote> GetCommentDevoteAsync(Guid userId, Guid commentId);
+        Task<int> GetCommentUpvoteCountAsync(Guid commentId);
     }
 }

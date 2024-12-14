@@ -8,5 +8,11 @@ using System.Threading.Tasks;
 
 namespace Application.PlantPosts.Query.GetPlantPosts
 {
-    public record GetPlantPostsQuery(int Limit, int Page, string? Tag, string? Filter) : IRequest<List<PlantPostDto>>;
+    public record GetPlantPostsQuery
+        (int Limit, 
+        int Page, 
+        Guid UserId,
+        string? Tag, 
+        string? Filter) 
+        : IRequest<GetPlantPostResult>;
 }
