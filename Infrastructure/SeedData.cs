@@ -4,11 +4,6 @@ using Domain.Entities.ECommerce;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -20,7 +15,19 @@ namespace Infrastructure
             {
                 var context = serviceScope.ServiceProvider.GetService<PlanGuruDBContext>();
                 var voteRepository = serviceScope.ServiceProvider.GetService<IVoteRepository>();
+
                 Console.WriteLine("Seeding Data");
+
+                // Danh sách tag cứng
+                var tags = new List<string> {
+                    "Plants",
+                    "Flowers",
+                    "Sell & Trade",
+                    "Guides & Tips",
+                    "Diseases",
+                    "Q&A",
+                    "DIY Projects"
+                };
 
                 // Seed Users
                 for (int i = 0; i < 5; i++)
@@ -35,6 +42,7 @@ namespace Infrastructure
                     };
                     context.Users.Add(user);
                 }
+
                 User user2 = new User()
                 {
                     UserId = Guid.NewGuid(),
@@ -55,18 +63,24 @@ namespace Infrastructure
                     var secondUser = firstTwoUsers[1];
 
                     // Seed Posts
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 9; i++)
                     {
-                        Post post = new Post()
+                        // Get a random tag
+                        var randomTag = tags[new Random().Next(tags.Count)];
+
+                        if (!string.IsNullOrEmpty(randomTag))
                         {
-                            UserId = firstUser.UserId,
-                            Title = $"Post Title {i + 1}",
-                            Description = $"This is the description for post {i + 1}.",
-                            ImageUrl = "https://i.pinimg.com/736x/d9/95/e3/d995e3f52c60ff8bc39f0ae2303bec6f.jpg",
-                            Tag = "Plants",
-                            Background = "https://i.pinimg.com/736x/6b/8d/55/6b8d557af9e7122dbd7eec1c2593232b.jpg",
-                        };
-                        context.Posts.Add(post);
+                            Post post = new Post()
+                            {
+                                UserId = firstUser.UserId,
+                                Title = $"Post Title {i + 1}",
+                                Description = $"This is the description for post {i + 1}.",
+                                ImageUrl = "https://i.pinimg.com/736x/d9/95/e3/d995e3f52c60ff8bc39f0ae2303bec6f.jpg",
+                                Tag = randomTag,
+                                Background = "https://i.pinimg.com/736x/6b/8d/55/6b8d557af9e7122dbd7eec1c2593232b.jpg",
+                            };
+                            context.Posts.Add(post);
+                        }
                     }
                     context.SaveChanges();
 
