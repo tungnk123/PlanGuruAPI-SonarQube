@@ -3,7 +3,9 @@ using Application.Users.Command.SignUp;
 using Application.Users.Querry.Login;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Entities.ECommerce;
 using PlanGuruAPI.DTOs.GroupDTOs;
+using PlanGuruAPI.DTOs.ProductDTOs;
 using PlanGuruAPI.DTOs.UserDTOs;
 
 namespace PlanGuruAPI.Mapping
@@ -28,7 +30,11 @@ namespace PlanGuruAPI.Mapping
                 .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(p => p.User.Avatar))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(p => FormatCreatedAt(p.CreatedAt)));
 
-            
+
+            CreateMap<ProductReadDTO, Product>().ReverseMap()
+                .ForMember(dest => dest.ProductImages, opt => opt.MapFrom(p => p.ProductImages.Select(p => p.Image)));
+
+            CreateMap<Product, ProductCreateDTO>().ReverseMap();
         }
 
         public static string FormatCreatedAt(DateTime createdAt)

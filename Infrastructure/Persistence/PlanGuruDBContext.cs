@@ -24,8 +24,9 @@ namespace Infrastructure.Persistence
         public DbSet<CommentDevote> CommentDevotes { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<Wiki> Wikis { get; set; }
+        public DbSet<Wiki> Wikis { get; set; }                  
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<ContentSection> ContentSections { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -124,9 +125,6 @@ namespace Infrastructure.Persistence
                 .HasForeignKey(p => p.WikiId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
-
-
-            base.OnModelCreating(modelBuilder);
 
 
             base.OnModelCreating(modelBuilder);
