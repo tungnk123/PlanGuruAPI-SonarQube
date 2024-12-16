@@ -26,6 +26,22 @@ namespace PlanGuruAPI.Controllers
             var listProduct = await _context.Products.Include(p => p.ProductImages).ToListAsync();
             return Ok(_mapper.Map<List<ProductReadDTO>>(listProduct));
         }
+        [HttpGet("{productId}")]
+        public async Task<IActionResult> GetProductById(Guid productId)
+        {
+            var product = await _context.Products.FindAsync(productId); 
+            if(product == null)
+            {
+                return NotFound("Can't find this product");
+            }
+            return Ok(_mapper.Map<ProductReadDTO>(product));
+        }
+        [HttpGet("shop/{userId}")]
+        public async Task<IActionResult> GetProductByShopId(Guid userId)
+        {
+            var listProduct = await _context.Products.Where(p => p.SellerId == userId).Include(p => p.ProductImages).ToListAsync();
+            return Ok(_mapper.Map<List<ProductReadDTO>>(listProduct));
+        }
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateDTO product)
         {
