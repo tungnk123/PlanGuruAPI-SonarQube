@@ -10,11 +10,7 @@ namespace Domain.Entities
     public class User : BaseEntity<Guid>
     {
         public Guid UserId { get; set; }
-        public override Guid Id
-        {
-            get => UserId;
-            set => UserId = value;
-        }
+        public override Guid Id { get => base.Id; set => base.Id = value; }
 
         public string Name { get; set; }
         public string Email { get; set; }
