@@ -107,6 +107,25 @@ namespace Infrastructure.Persistence
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<Product>(p =>
+            {
+                p.HasKey(p => p.Id);
+                p.HasMany(p => p.ProductImages)
+                    .WithOne(p => p.Product)
+                    .HasForeignKey(p => p.ProductId);
+
+                p.HasOne(p => p.Seller)
+                .WithMany()
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                p.HasOne(p => p.Wiki)
+                .WithMany()
+                .HasForeignKey(p => p.WikiId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
             base.OnModelCreating(modelBuilder);
 
 
