@@ -4,11 +4,6 @@ using Domain.Entities.ECommerce;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -20,10 +15,19 @@ namespace Infrastructure
             {
                 var context = serviceScope.ServiceProvider.GetService<PlanGuruDBContext>();
                 var voteRepository = serviceScope.ServiceProvider.GetService<IVoteRepository>();
-                var tagRepository = serviceScope.ServiceProvider.GetService<ITagRepository>();
-                var tags = tagRepository.GetTagsAsync().Result;
 
                 Console.WriteLine("Seeding Data");
+
+                // Danh sách tag cứng
+                var tags = new List<string> {
+                    "Plants",
+                    "Flowers",
+                    "Sell & Trade",
+                    "Guides & Tips",
+                    "Diseases",
+                    "Q&A",
+                    "DIY Projects"
+                };
 
                 // Seed Users
                 for (int i = 0; i < 5; i++)
@@ -38,6 +42,7 @@ namespace Infrastructure
                     };
                     context.Users.Add(user);
                 }
+
                 User user2 = new User()
                 {
                     UserId = Guid.NewGuid(),
@@ -60,10 +65,10 @@ namespace Infrastructure
                     // Seed Posts
                     for (int i = 0; i < 9; i++)
                     {
-                        // get a random tag
+                        // Get a random tag
                         var randomTag = tags[new Random().Next(tags.Count)];
 
-                        if (randomTag != null)
+                        if (!string.IsNullOrEmpty(randomTag))
                         {
                             Post post = new Post()
                             {
@@ -76,7 +81,6 @@ namespace Infrastructure
                             };
                             context.Posts.Add(post);
                         }
-
                     }
                     context.SaveChanges();
 
