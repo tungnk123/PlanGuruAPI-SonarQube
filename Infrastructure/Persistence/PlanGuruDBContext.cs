@@ -93,8 +93,15 @@ namespace Infrastructure.Persistence
             modelBuilder.Entity<Product>()
                         .HasOne(p => p.Wiki)
                         .WithMany(w => w.AttachedProducts)
-                        .HasForeignKey(p => p.WikiId)
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey(p => p.WikiId);
+            //.OnDelete(DeleteBehavior.SetNull); // Khi xóa Wiki, WikiId trong Product được đặt thành null
+
+            modelBuilder.Entity<Wiki>()
+            .HasMany(w => w.AttachedProducts) // Wiki có nhiều Product
+            .WithOne(p => p.Wiki) // Product có một Wiki
+            .HasForeignKey(p => p.WikiId); // Khóa ngoại trong Product
+            //.OnDelete(DeleteBehavior.SetNull); // Set WikiId = null nếu Wiki bị xóa nếu có Product đang tham chiếu
+
 
             // Cấu hình quan hệ giữa Vote và User: 1-n
             modelBuilder.Entity<Vote>(entity =>

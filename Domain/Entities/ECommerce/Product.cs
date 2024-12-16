@@ -19,8 +19,8 @@ namespace Domain.Entities.ECommerce
 
         public List<string> ProductImageUrls { get; set; } = [];
 
-        public Guid WikiId { get; set; }
-        public virtual Wiki Wiki { get; set; }
+        public Guid? WikiId { get; set; }
+        public virtual Wiki? Wiki { get; set; }
 
     }
 }
