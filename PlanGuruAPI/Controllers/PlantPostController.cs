@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PlanGuruAPI.DTOs;
 using PlanGuruAPI.DTOs.CommentDTOs;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace PlanGuruAPI.Controllers
 {
