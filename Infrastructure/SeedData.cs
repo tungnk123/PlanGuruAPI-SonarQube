@@ -63,7 +63,7 @@ namespace Infrastructure
                     var secondUser = firstTwoUsers[1];
 
                     // Seed Posts
-                    for (int i = 0; i < 9; i++)
+                    for (int i = 0; i < 30; i++)
                     {
                         // Get a random tag
                         var randomTag = tags[new Random().Next(tags.Count)];
