@@ -75,6 +75,13 @@ namespace PlanGuruAPI.Controllers
             return Ok(tags);
         }
 
+        [HttpGet("test/get-all-filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var filters = await _mediator.Send(new GetFiltersQuery());
+            return Ok(filters);
+        }
+
         [HttpPost("upvote")]
         public async Task<IActionResult> UpvotePost([FromBody] UpvoteDto upvoteDto)
         {

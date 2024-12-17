@@ -15,19 +15,24 @@ namespace Infrastructure
             {
                 var context = serviceScope.ServiceProvider.GetService<PlanGuruDBContext>();
                 var voteRepository = serviceScope.ServiceProvider.GetService<IVoteRepository>();
+                var tagRepository = serviceScope.ServiceProvider.GetService<ITagRepository>();
+                if (tagRepository == null)
+                {
+                    Console.WriteLine("Tag Repository is null");
+                }
 
                 Console.WriteLine("Seeding Data");
 
                 // Danh sách tag cứng
-                var tags = new List<string> {
-                    "Plants",
-                    "Flowers",
-                    "Sell & Trade",
-                    "Guides & Tips",
-                    "Diseases",
-                    "Q&A",
-                    "DIY Projects"
-                };
+                var tags = tagRepository == null ? 
+                    [ 
+                        "plants", 
+                        "flowers", 
+                        "guides", 
+                        "diseases", 
+                        "qna", 
+                        "diy" ] : 
+                        tagRepository.GetTagsAsync().Result;
 
                 // Seed Users
                 for (int i = 0; i < 5; i++)
