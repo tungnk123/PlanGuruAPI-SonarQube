@@ -44,6 +44,8 @@ namespace PlanGuruAPI
                     Enum = Enum.GetValues(typeof(TargetType)).Cast<int>().Select(e => (IOpenApiAny)new OpenApiInteger(e)).ToList(),
                     Description = "Type of target. Values: 0 = Post, 1 = Comment, 2 = Wiki"
                 });
+
+                c.EnableAnnotations();
             });
             builder.Services.AddApplication().AddInfrastructure();
             builder.Services.AddControllers();

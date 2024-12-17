@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PlanGuruAPI.DTOs;
 using PlanGuruAPI.DTOs.CommentDTOs;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace PlanGuruAPI.Controllers
 {
@@ -72,6 +73,13 @@ namespace PlanGuruAPI.Controllers
         {
             var tags = await _mediator.Send(new GetTagsQuery());
             return Ok(tags);
+        }
+
+        [HttpGet("test/get-all-filters")]
+        public async Task<IActionResult> GetFilters()
+        {
+            var filters = await _mediator.Send(new GetFiltersQuery());
+            return Ok(filters);
         }
 
         [HttpPost("upvote")]

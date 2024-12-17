@@ -10,62 +10,39 @@ namespace Infrastructure.Persistence.Repository
 {
     public class TagRepository : ITagRepository
     {
-        private readonly string _fileName = "get_post_param.json";
-        private readonly string _filePath;
+        private readonly List<string> _tags;
+        private readonly List<string> _filters;
 
         public TagRepository()
         {
-            _filePath = Path.Combine(Directory.GetCurrentDirectory(), _fileName);
+            // Hardcoded list of tags
+            _tags = new List<string>
+                {
+                    "plants",
+                    "flowers",
+                    "guides",
+                    "diseases",
+                    "qna",
+                    "diy"
+                };
+
+            // Hardcoded list of filters
+            _filters = new List<string>
+                {
+                    "trending",
+                    "upvote",
+                    "time"
+                };
         }
 
-        public async Task<List<string>> GetTagsAsync()
+        public Task<List<string>> GetTagsAsync()
         {
-            if (!File.Exists(_filePath))
-            {
-                return new List<string>();
-            }
-
-            var jsonContent = await File.ReadAllTextAsync(_filePath);
-            Console.WriteLine($"JSON Content: {jsonContent}"); // Log the JSON content for debugging
-
-            try
-            {
-                var settingsData = JsonConvert.DeserializeObject<SettingsData>(jsonContent);
-                return settingsData?.Tags ?? new List<string>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Deserialization error: {ex.Message}");
-                return new List<string>();
-            }
+            return Task.FromResult(_tags);
         }
 
-        public async Task<List<string>> GetFiltersAsync()
+        public Task<List<string>> GetFiltersAsync()
         {
-            if (!File.Exists(_filePath))
-            {
-                return new List<string>();
-            }
-
-            var jsonContent = await File.ReadAllTextAsync(_filePath);
-            Console.WriteLine($"JSON Content: {jsonContent}"); // Log the JSON content for debugging
-
-            try
-            {
-                var settingsData = JsonConvert.DeserializeObject<SettingsData>(jsonContent);
-                return settingsData?.Filters ?? new List<string>();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Deserialization error: {ex.Message}");
-                return new List<string>();
-            }
+            return Task.FromResult(_filters);
         }
-    }
-
-    public class SettingsData
-    {
-        public List<string> Tags { get; set; } = new List<string>();
-        public List<string> Filters { get; set; } = new List<string>();
     }
 }

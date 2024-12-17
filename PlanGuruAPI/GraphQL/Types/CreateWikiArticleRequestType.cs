@@ -22,9 +22,9 @@ namespace PlanGuruAPI.GraphQL.Types
         public ContentSectionRequestType()
         {
             Name = "ContentSectionRequest";
-            Field(x => x.SectionName);
-            Field(x => x.Content, nullable: true);
-            Field<ListGraphType<StringGraphType>>("imageUrls");
+            Field(x => x.SectionName).Description("The name of the content section.");
+            Field(x => x.Content, nullable: true).Description("The content of the section.");
+            Field<ListGraphType<StringGraphType>>("imageUrls", "The list of image URLs in the section.");
         }
     }
 }
