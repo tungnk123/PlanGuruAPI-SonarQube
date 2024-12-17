@@ -16,11 +16,9 @@ namespace Domain.Entities.ECommerce
 
         public Guid SellerId { get; set; }
         public virtual User Seller { get; set; }
-
-        public List<string> ProductImageUrls { get; set; } = [];
-
         public Guid? WikiId { get; set; }
         public virtual Wiki? Wiki { get; set; }
+        public ICollection<ProductImages> ProductImages { get; set; }
 
     }
 }

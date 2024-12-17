@@ -3,6 +3,7 @@ using Application.Users.Command.SignUp;
 using Application.Users.Common;
 using Application.Users.Querry.Login;
 using AutoMapper;
+using Domain.Entities;
 using Infrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -37,9 +38,22 @@ namespace PlanGuruAPI.Controllers
         [HttpPost("signUp")]
         public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
         {
-            var command = _mapper.Map<SignUpCommand>(signUpRequest);
-            var signUpResult = await _mediator.Send(command);       
-            return Ok(signUpResult);
+            var existUser = await _context.Users.FirstOrDefaultAsync(p => p.Email == signUpRequest.email);
+            if (existUser != null)
+            {
+                return BadRequest("This email is already exist");
+            } 
+            var user = new User()
+            {
+                Id = Guid.NewGuid(),
+                Avatar = signUpRequest.avatar,
+                Email = signUpRequest.email,
+                Password = signUpRequest.password,
+                Name = signUpRequest.name,
+            };
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return Ok(new {userId = user.Id});
         }
         [HttpPost("setNameAndAvatar")]
         public async Task<IActionResult> SetNameAndAvatar(SetNameAndAvatarRequest setNameAndAvatarRequest)

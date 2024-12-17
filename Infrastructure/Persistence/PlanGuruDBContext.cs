@@ -24,8 +24,9 @@ namespace Infrastructure.Persistence
         public DbSet<CommentDevote> CommentDevotes { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<Wiki> Wikis { get; set; }
+        public DbSet<Wiki> Wikis { get; set; }                  
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<ContentSection> ContentSections { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -114,7 +115,23 @@ namespace Infrastructure.Persistence
                       .OnDelete(DeleteBehavior.Restrict);
             });
 
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Product>(p =>
+            {
+                p.HasKey(p => p.Id);
+                p.HasMany(p => p.ProductImages)
+                    .WithOne(p => p.Product)
+                    .HasForeignKey(p => p.ProductId);
+
+                p.HasOne(p => p.Seller)
+                .WithMany()
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                p.HasOne(p => p.Wiki)
+                .WithMany()
+                .HasForeignKey(p => p.WikiId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
 
 
             base.OnModelCreating(modelBuilder);
