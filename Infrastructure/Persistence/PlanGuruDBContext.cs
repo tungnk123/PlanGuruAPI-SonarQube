@@ -31,6 +31,7 @@ namespace Infrastructure.Persistence
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupUser> GroupUsers { get; set; }
+        public DbSet<Order> Orders { get; set; }    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -130,6 +131,20 @@ namespace Infrastructure.Persistence
                 p.HasOne(p => p.Wiki)
                 .WithMany()
                 .HasForeignKey(p => p.WikiId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Order>(p =>
+            {
+                p.HasKey(p => p.Id);
+                p.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                p.HasOne(p => p.Product)
+                .WithMany()
+                .HasForeignKey(p => p.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
 
