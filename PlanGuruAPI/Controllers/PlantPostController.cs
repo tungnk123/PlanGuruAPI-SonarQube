@@ -52,12 +52,13 @@ namespace PlanGuruAPI.Controllers
         {
             return Ok(await _postRepository.GetApprovedPost());
         }
-        [HttpGet("plantPostUserCount")]
+        [HttpGet("getCountStatistic")]
         public async Task<IActionResult> GetPlantPostUserCount()
         {
+            var wikis = await _context.Wikis.ToListAsync();
             var users = await _context.Users.ToListAsync();
             var posts = await _context.Posts.ToListAsync();
-            return Ok(new { numberOfUser = users.Count, numberOfPost = posts.Count });
+            return Ok(new { numberOfUser = users.Count, numberOfPost = posts.Count, numberOfWiki = wikis.Count });
         }
 
         [HttpGet]
