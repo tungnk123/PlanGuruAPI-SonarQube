@@ -76,7 +76,7 @@ namespace PlanGuruAPI
 
             app.UseAuthorization();
 
-            app.UseExceptionHandler("/error");
+            //app.UseExceptionHandler("/error");
 
             app.seedData();
 
