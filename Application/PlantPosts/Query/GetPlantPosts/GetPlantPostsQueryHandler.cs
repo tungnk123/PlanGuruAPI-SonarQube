@@ -48,25 +48,25 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 var hasUpvoted = await postVoteStrategy.HasUpvotedAsync(request.UserId, post.Id);
                 var hasDevoted = await postVoteStrategy.HasDevotedAsync(request.UserId, post.Id);
 
-                var postDto = new PlantPostDto(
-                    post.Id,
-                    post.UserId,
-                    post.User.Name,
-                    post.User.Avatar,
-                    post.Title,
-                    post.Description,
-                    post.ImageUrl,
-                    post.Tag,
-                    post.Background,
-                    upvoteCount,
-                    devoteCount,
-                    post.PostComments.Count,
-                    post.PostShares.Count,
-                    FormatCreatedAt(post.CreatedAt),
-                    hasUpvoted, // Thêm thông tin này
-                    hasDevoted  // Thêm thông tin này
-                );
-
+                var postDto = new PlantPostDto
+                {
+                    PostId = post.Id,
+                    UserId = post.UserId,
+                    UserNickName = post.User.Name,
+                    UserAvatar = post.User.Avatar,
+                    Title = post.Title,
+                    Description = post.Description,
+                    ImageUrl = post.ImageUrl,
+                    Tag = post.Tag,
+                    Background = post.Background,
+                    NumberOfUpvote = upvoteCount,
+                    NumberOfDevote = devoteCount,
+                    NumberOfComment = post.PostComments.Count,
+                    NumberOfShare = post.PostShares.Count,
+                    CreatedDate = FormatCreatedAt(post.CreatedAt),
+                    HasUpvoted = hasUpvoted,
+                    HasDevoted = hasDevoted
+                };
                 postDtos.Add(postDto);
             }
 

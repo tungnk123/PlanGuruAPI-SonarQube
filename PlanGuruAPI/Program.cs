@@ -1,4 +1,4 @@
-using Application;
+﻿using Application;
 using Application.Common.Interface.Persistence;
 using AutoMapper;
 using Domain.Entities;
@@ -59,6 +59,12 @@ namespace PlanGuruAPI
             builder.Services.AddScoped<WikiQuery>();
             builder.Services.AddScoped<WikiMutation>();
             builder.Services.AddScoped<WikiSchema>();
+
+            builder.Services.AddMemoryCache(options =>
+            {
+                options.SizeLimit = 120; // Giới hạn cache tối đa là 120 mục
+                //options.ExpirationScanFrequency = TimeSpan.FromMinutes(5); // Tần suất quét để xóa cache hết hạn
+            });
 
             var app = builder.Build();
 

@@ -1,10 +1,13 @@
-﻿using Application.Users.Command.SetNameAndAvatar;
+﻿using Application.PlantPosts.Command.CreatePost;
+using Application.PlantPosts.Common.GetPlantPosts;
+using Application.Users.Command.SetNameAndAvatar;
 using Application.Users.Command.SignUp;
 using Application.Users.Querry.Login;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Entities.ECommerce;
 using PlanGuruAPI.DTOs.GroupDTOs;
+using PlanGuruAPI.DTOs.PlantPostDTOs;
 using PlanGuruAPI.DTOs.ProductDTOs;
 using PlanGuruAPI.DTOs.UserDTOs;
 
