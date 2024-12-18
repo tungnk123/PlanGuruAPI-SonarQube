@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Entities.ECommerce;
 using PlanGuruAPI.DTOs.GroupDTOs;
+using PlanGuruAPI.DTOs.OrderDTOs;
 using PlanGuruAPI.DTOs.ProductDTOs;
 using PlanGuruAPI.DTOs.UserDTOs;
 
@@ -35,6 +36,9 @@ namespace PlanGuruAPI.Mapping
                 .ForMember(dest => dest.ProductImages, opt => opt.MapFrom(p => p.ProductImages.Select(p => p.Image)));
 
             CreateMap<Product, ProductCreateDTO>().ReverseMap();
+
+            CreateMap<Order, OrderReadDTO>().ReverseMap();
+            CreateMap<Order, OrderCreateDTO>().ReverseMap();    
         }
 
         public static string FormatCreatedAt(DateTime createdAt)
