@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.ECommerce;
+using Domain.Entities.WikiEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,10 @@ namespace Domain.Entities
         public ICollection<PostUpvote> PostUpvotes { get; set; }
         public ICollection<PostShare> PostShares { get; set; }
         public ICollection<Product> Products { get; set; }
-        public ICollection<Vote> Votes { get; set; } // Add this line
+        public ICollection<Vote> Votes { get; set; }
         public ICollection<GroupUser> ListGroup { get; set; }  
         public ICollection<Group> ListOwnGroup { get; set; }
+        public ICollection<Contribution> Contributions { get; set; } 
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.ECommerce;
+using Domain.Entities.WikiEntities;
 namespace Domain.Entities.WikiService
 {
     public class Wiki : BaseEntity<Guid>
@@ -13,5 +14,7 @@ namespace Domain.Entities.WikiService
         public Guid AuthorId { get; set; } = Guid.NewGuid(); // First contributor is also the author
         public int Upvotes { get; set; } = 0;
         public int Downvotes { get; set; } = 0;
+        public List<Contribution> Contributions { get; set; } = new();
+
     }
 }
