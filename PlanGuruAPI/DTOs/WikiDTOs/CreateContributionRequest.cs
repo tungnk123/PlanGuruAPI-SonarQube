@@ -4,7 +4,7 @@ namespace PlanGuruAPI.DTOs.WikiDTOs
 {
     public class CreateContributionRequest
     {
-        public List<ContentSection> ContentSections { get; set; } = new();
+        public string Content { get; set; } = string.Empty;
         public Guid ContributorId { get; set; }
     }
 }

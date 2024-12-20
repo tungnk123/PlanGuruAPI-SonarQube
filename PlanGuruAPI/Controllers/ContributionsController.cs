@@ -30,7 +30,14 @@ namespace PlanGuruAPI.Controllers
             }
 
             var updatedWiki = await _wikiRepository.GetByIdAsync(wikiId);
-            return Ok(updatedWiki);
+
+            var wikiDto = new
+            {
+                updatedWiki.Content,
+                ContributorsCount = updatedWiki.Contributors.Count,
+            };
+
+            return Ok(wikiDto);
         }
 
         [HttpGet("{wikiId}/pending-contributions")]
@@ -85,14 +92,24 @@ namespace PlanGuruAPI.Controllers
             var contribution = new Contribution
             {
                 WikiId = wikiId,
-                ContentSections = request.ContentSections,
+                Content = request.Content,
                 ContributorId = request.ContributorId,
                 Status = ContributionStatus.Pending
             };
 
             await _wikiRepository.AddContributionAsync(contribution);
 
-            return Ok(contribution);
+            // Map to DTO
+            var contributionDto = new
+            {
+                Id = contribution.Id,
+                WikiId = contribution.WikiId,
+                Content = contribution.Content,
+                Status = contribution.Status,
+                ContributorId = contribution.ContributorId
+            };
+
+            return Ok(contributionDto);
         }
     }
 

@@ -38,8 +38,8 @@ namespace Infrastructure.Persistence.Repository
             try
             {
                 var listP = await _context.Products
+                    .Take(n)
                     .ToListAsync();
-
                 return listP;
             }
             catch (Exception e)

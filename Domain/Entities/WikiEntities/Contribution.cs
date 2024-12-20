@@ -16,6 +16,8 @@ namespace Domain.Entities.WikiEntities
         public string? RejectionReason { get; set; }
         public Guid ContributorId { get; set; }
         public User Contributor { get; set; }
+        public string Content { get; set; } = string.Empty; // Updated to use string content
+
     }
 
     public enum ContributionStatus

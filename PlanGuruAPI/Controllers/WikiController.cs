@@ -34,24 +34,6 @@ namespace PlanGuruAPI.Controllers
                 });
             }
 
-            // Initialize default sections
-            var defaultSections = new List<ContentSection>
-                            {
-                                new() { SectionName = "Season", Content = "", ImageUrls = { } },
-                                new() { SectionName = "Height", Content = "", ImageUrls = { } },
-                                new() { SectionName = "Interesting Information", Content = "", ImageUrls = { } },
-                                new() { SectionName = "Care Instructions", Content = "", ImageUrls = { } },
-                            };
-
-            // Combine default sections with provided sections
-            var combinedSections = defaultSections;
-            combinedSections.AddRange(request.ContentSections.Select(cs => new ContentSection
-            {
-                SectionName = cs.SectionName,
-                Content = cs.Content,
-                ImageUrls = cs.ImageUrls.ToList()
-            }));
-
             var attachedProducts = await _productRepository.GetProductsByIdsAsync(request.ProductIds);
             var author = await _userRepository.GetByIdAsync(Guid.Parse(request.AuthorId));
 
@@ -69,7 +51,6 @@ namespace PlanGuruAPI.Controllers
                 Title = request.Title,
                 Description = request.Description,
                 ThumbnailImageUrl = request.ThumbnailImageUrl,
-                ContentSections = combinedSections,
                 AttachedProducts = attachedProducts,
                 Status = WikiStatus.Pending,
                 AuthorId = Guid.Parse(request.AuthorId),
@@ -130,13 +111,6 @@ namespace PlanGuruAPI.Controllers
                 Description = "This is a sample description for the wiki article.",
                 ThumbnailImageUrl = "sample-thumbnail.png",
                 AuthorId = author.UserId.ToString(),
-                ContentSections = new List<ContentSectionRequest>
-                {
-                    new() { SectionName = "Season", Content = "Spring", ImageUrls = { "spring-image.png" } },
-                    new() { SectionName = "Height", Content = "10-20 feet", ImageUrls = { "height-image.png" } },
-                    new() { SectionName = "Interesting Information", Content = "Interesting information about the plant.", ImageUrls = { "interesting-image.png" } },
-                    new() { SectionName = "Care Instructions", Content = "Care instructions for the plant.", ImageUrls = { "care-image.png" } }
-                },
                 ProductIds = products.Select(p => p.Id.ToString()).ToList()
             };
             return Ok(sampleRequest);

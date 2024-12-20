@@ -29,41 +29,33 @@ namespace Infrastructure.Persistence.Repository
         {
             return await _context.Wikis
                 .Include(w => w.Contributors)
-                .Include(w => w.ContentSections)
-                .Include(w => w.AttachedProducts)
                 .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task UpdateWikiAsync(Wiki wiki, List<Guid> productIds)
         {
             var existingWiki = await _context.Wikis
-                .Include(w => w.AttachedProducts)
                 .FirstOrDefaultAsync(w => w.Id == wiki.Id);
 
-            if (existingWiki == null)
+            if (existingWiki != null)
             {
-                throw new Exception("Wiki not found");
+                existingWiki.Title = wiki.Title;
+                existingWiki.Description = wiki.Description;
+                existingWiki.ThumbnailImageUrl = wiki.ThumbnailImageUrl;
+                existingWiki.Content = wiki.Content;
+                existingWiki.AttachedProducts = await _context.Products
+                    .Where(p => productIds.Contains(p.Id))
+                    .ToListAsync();
+
+                await _context.SaveChangesAsync();
             }
-
-            existingWiki.Title = wiki.Title;
-            existingWiki.Description = wiki.Description;
-            existingWiki.ThumbnailImageUrl = wiki.ThumbnailImageUrl;
-            existingWiki.ContentSections = wiki.ContentSections;
-
-            var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
-            existingWiki.AttachedProducts = products;
-
-            _context.Wikis.Update(existingWiki);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<List<Wiki>> GetAllAsync()
         {
-            return await _context.Wikis
-                .Include(w => w.ContentSections)
-                .Include(w => w.AttachedProducts)
-                .ToListAsync();
+            return await _context.Wikis.ToListAsync();
         }
+
         public async Task<List<Contribution>> GetPendingContributionsAsync(Guid wikiId)
         {
             return await _context.Contributions
@@ -71,16 +63,16 @@ namespace Infrastructure.Persistence.Repository
                 .ToListAsync();
         }
 
-        public async Task<List<ContentSection>> GetOriginalContentAsync(Guid wikiId)
+        public async Task<string?> GetOriginalContentAsync(Guid wikiId)
         {
             var wiki = await _context.Wikis.FindAsync(wikiId);
-            return wiki?.ContentSections;
+            return wiki?.Content;
         }
 
-        public async Task<List<ContentSection>> GetContributionContentAsync(Guid contributionId)
+        public async Task<string?> GetContributionContentAsync(Guid contributionId)
         {
             var contribution = await _context.Contributions.FindAsync(contributionId);
-            return contribution?.ContentSections;
+            return contribution?.Content;
         }
 
         public async Task<bool> ApproveContributionAsync(Guid wikiId, Guid contributionId)
@@ -93,7 +85,7 @@ namespace Infrastructure.Persistence.Repository
                 .FirstOrDefaultAsync(w => w.Id == wikiId);
             if (wiki == null) return false;
 
-            wiki.ContentSections = contribution.ContentSections;
+            wiki.Content = contribution.Content;
             contribution.Status = ContributionStatus.Approved;
 
             if (!wiki.Contributors.Any(c => c.Id == contribution.ContributorId))
@@ -133,6 +125,5 @@ namespace Infrastructure.Persistence.Repository
             await _context.Contributions.AddAsync(contribution);
             await _context.SaveChangesAsync();
         }
-
     }
 }

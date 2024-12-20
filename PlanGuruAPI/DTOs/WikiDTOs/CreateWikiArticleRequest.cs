@@ -13,7 +13,6 @@
         public string Description { get; set; }
         public string ThumbnailImageUrl { get; set; }
         public string AuthorId { get; set; }
-        public List<ContentSectionRequest> ContentSections { get; set; } = new();
         public List<string> ProductIds { get; set; } = new();
     }
 

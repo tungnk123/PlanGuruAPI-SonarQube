@@ -16,11 +16,11 @@ namespace Application.Common.Interface.Persistence
         Task<List<Wiki>> GetAllAsync();
 
         Task<List<Contribution>> GetPendingContributionsAsync(Guid wikiId);
-        Task<List<ContentSection>> GetOriginalContentAsync(Guid wikiId);
-        Task<List<ContentSection>> GetContributionContentAsync(Guid contributionId);
+        Task<string?> GetOriginalContentAsync(Guid wikiId);
+        Task<string?> GetContributionContentAsync(Guid contributionId);
         Task<bool> ApproveContributionAsync(Guid wikiId, Guid contributionId);
         Task<bool> RejectContributionAsync(Guid wikiId, Guid contributionId, string reason);
         Task<List<Contribution>> GetContributionHistoryAsync(Guid wikiId);
-        Task AddContributionAsync(Contribution contribution); // Add this line
+        Task AddContributionAsync(Contribution contribution);
     }
 }
