@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using GraphQL.Validation.Complexity;
+using GraphQL.Validation.Rules;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,17 @@ namespace PlanGuruAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var listMembership = await _context.Memeberships.ToListAsync();
-            return Ok(listMembership);  
+            return Ok(listMembership);
+        }
+        [HttpGet("{membershipId}")]
+        public async Task<IActionResult> GetById(Guid membershipId)
+        {
+            var membership = await _context.Memeberships.FindAsync(membershipId);       
+            if (membership == null)
+            {
+                return NotFound("Can't find this membership");
+            }
+            return Ok(membership);      
         }
         [HttpPost]
         public async Task<IActionResult> CreateMembership(MembershipCreateDTO membershipCreateDTO)
