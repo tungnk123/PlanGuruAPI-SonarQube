@@ -115,5 +115,21 @@ namespace PlanGuruAPI.Controllers
             };
             return Ok(sampleRequest);
         }
+
+        // New API to get list of wiki cards
+        [HttpGet("GetWikiCards")]
+        public async Task<IActionResult> GetWikiCards()
+        {
+            var wikis = await _wikiRepository.GetAllAsync();
+            var wikiCards = wikis.Select(wiki => new WikiCardDto
+            {
+                ThumbnailImageUrl = wiki.ThumbnailImageUrl,
+                Title = wiki.Title,
+                Upvotes = wiki.Upvotes,
+                ContributorCount = wiki.Contributors.Count
+            }).ToList();
+
+            return Ok(wikiCards);
+        }
     }
 }

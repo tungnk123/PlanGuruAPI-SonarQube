@@ -53,7 +53,9 @@ namespace Infrastructure.Persistence.Repository
 
         public async Task<List<Wiki>> GetAllAsync()
         {
-            return await _context.Wikis.ToListAsync();
+            return await _context.Wikis
+                .Include(w => w.Contributors)
+                .ToListAsync();
         }
 
         public async Task<List<Contribution>> GetPendingContributionsAsync(Guid wikiId)

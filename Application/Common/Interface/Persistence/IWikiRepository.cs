@@ -14,7 +14,6 @@ namespace Application.Common.Interface.Persistence
         Task<Wiki?> GetByIdAsync(Guid id);
         Task UpdateWikiAsync(Wiki wiki, List<Guid> productIds);
         Task<List<Wiki>> GetAllAsync();
-
         Task<List<Contribution>> GetPendingContributionsAsync(Guid wikiId);
         Task<string?> GetOriginalContentAsync(Guid wikiId);
         Task<string?> GetContributionContentAsync(Guid contributionId);
