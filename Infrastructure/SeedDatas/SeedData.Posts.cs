@@ -38,7 +38,7 @@ namespace Infrastructure
             if (!context.Posts.Any())
             {
                 var random = new Random();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     var randomTag = tags[random.Next(tags.Count)];
 
@@ -53,7 +53,7 @@ namespace Infrastructure
                             Tag = randomTag,
                             Background = "https://i.pinimg.com/736x/6b/8d/55/6b8d557af9e7122dbd7eec1c2593232b.jpg"
                         };
-
+                        if (i < 10) post.IsApproved = true;
                         context.Posts.Add(post);
                     }
                 }
