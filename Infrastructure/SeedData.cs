@@ -84,6 +84,7 @@ namespace Infrastructure
                                 Tag = randomTag,
                                 Background = "https://i.pinimg.com/736x/6b/8d/55/6b8d557af9e7122dbd7eec1c2593232b.jpg",
                             };
+                            if (i < 20) post.IsApproved = true;
                             context.Posts.Add(post);
                         }
                     }

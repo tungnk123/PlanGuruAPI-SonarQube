@@ -10,6 +10,6 @@
         public Guid SellerId { get; set; }
         public Guid? WikiId { get; set; }
 
-        public List<string> ProductImage { get; set; }
+        public List<string> ProductImages { get; set; }
     }
 }

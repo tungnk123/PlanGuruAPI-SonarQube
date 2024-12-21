@@ -62,7 +62,7 @@ namespace PlanGuruAPI.Controllers
             newProduct.Id = Guid.NewGuid();
             await _context.Products.AddAsync(newProduct);
 
-            foreach (var image in product.ProductImage)
+            foreach (var image in product.ProductImages)
             {
                 var productImage = new ProductImages()
                 {
