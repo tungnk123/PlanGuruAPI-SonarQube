@@ -105,5 +105,43 @@ namespace PlanGuruAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok("Mark this order success successfully");
         }
+
+        [HttpPut("{orderId}")]
+        public async Task<IActionResult> UpdateOrder(Guid orderId, OrderUpdateDTO orderUpdateDto)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound("This order does not exist");
+            }
+
+            var product = await _context.Products.FindAsync(orderUpdateDto.ProductId);
+            if (product == null)
+            {
+                return BadRequest("The specified product does not exist");
+            }
+
+            _mapper.Map(orderUpdateDto, order);
+            order.TotalPrice = order.Quantity * product.Price;
+            order.LastModifiedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return Ok(_mapper.Map<OrderReadDTO>(order));
+        }
+
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(Guid orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound("This order does not exist");
+            }
+
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            return Ok("Order deleted successfully");
+        }
+
     }
 }

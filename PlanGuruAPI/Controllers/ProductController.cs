@@ -29,7 +29,7 @@ namespace PlanGuruAPI.Controllers
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProductById(Guid productId)
         {
-            var product = await _context.Products.FindAsync(productId); 
+            var product = await _context.Products.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == productId); 
             if(product == null)
             {
                 return NotFound("Can't find this product");
@@ -62,7 +62,7 @@ namespace PlanGuruAPI.Controllers
             newProduct.Id = Guid.NewGuid();
             await _context.Products.AddAsync(newProduct);
 
-            foreach (var image in product.ProductImage)
+            foreach (var image in product.ProductImages)
             {
                 var productImage = new ProductImages()
                 {

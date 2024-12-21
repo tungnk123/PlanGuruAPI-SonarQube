@@ -32,8 +32,9 @@ namespace Infrastructure.Persistence
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupUser> GroupUsers { get; set; }
+        public DbSet<Contribution> Contributions { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Contribution> Contributions { get; set; } // Add this line
+        public DbSet<Membership> Memeberships { get; set; }     
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -131,6 +132,10 @@ namespace Infrastructure.Persistence
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<Membership>(p =>
+            {
+                p.HasKey(p => p.Id);
+            });
             // Configure Contribution entity
             modelBuilder.Entity<Contribution>(entity =>
             {
