@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.ECommerce;
+using Domain.Entities.WikiEntities;
 using Domain.Entities.WikiService;
 using Infrastructure.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,14 @@ namespace Infrastructure.Persistence
         public DbSet<CommentDevote> CommentDevotes { get; set; }
         public DbSet<ChatRoom> ChatRooms { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
-        public DbSet<Wiki> Wikis { get; set; }                  
+        public DbSet<Wiki> Wikis { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<ContentSection> ContentSections { get; set; }
         public DbSet<Vote> Votes { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupUser> GroupUsers { get; set; }
+        public DbSet<Contribution> Contributions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Membership> Memeberships { get; set; }     
 
@@ -38,15 +40,15 @@ namespace Infrastructure.Persistence
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new PostConfiguration());
-            modelBuilder.ApplyConfiguration(new CommentConfiguration()); 
+            modelBuilder.ApplyConfiguration(new CommentConfiguration());
             modelBuilder.ApplyConfiguration(new PostUpvoteConfiguration());
             modelBuilder.ApplyConfiguration(new PostDevoteConfiguration());
             modelBuilder.ApplyConfiguration(new CommentUpvoteConfiguration());
             modelBuilder.ApplyConfiguration(new CommentDevoteConfiguration());
             modelBuilder.ApplyConfiguration(new PostShareConfiguration());
             modelBuilder.ApplyConfiguration(new ContentSectionConfiguration());
-            modelBuilder.ApplyConfiguration(new GroupConfiguration());  
-            modelBuilder.ApplyConfiguration(new GroupUserConfiguration());  
+            modelBuilder.ApplyConfiguration(new GroupConfiguration());
+            modelBuilder.ApplyConfiguration(new GroupUserConfiguration());
 
             modelBuilder.Entity<ChatRoom>()
                 .HasKey(p => p.ChatRoomId);
@@ -55,62 +57,46 @@ namespace Infrastructure.Persistence
                 .WithOne(p => p.ChatRoom)
                 .HasForeignKey(p => p.ChatRoomId);
             modelBuilder.Entity<ChatMessage>()
-                .HasKey(p => p.ChatMessageId);  
+                .HasKey(p => p.ChatMessageId);
 
             modelBuilder.Entity<Comment>(entity =>
             {
-                // Thiết lập khóa chính cho Comment
                 entity.HasKey(c => c.Id);
-
-                // Quan hệ 1-n với User (1 User có nhiều Comment)
                 entity.HasOne(c => c.User)
-                      .WithMany(u => u.Comments)  // Assumes User entity has ICollection<Comment> Comments
+                      .WithMany(u => u.Comments)
                       .HasForeignKey(c => c.UserId)
-                      .OnDelete(DeleteBehavior.Restrict); // Tránh xóa cascade
-
-                // Quan hệ 1-n với Post (1 Post có nhiều Comment)
+                      .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(c => c.Post)
-                      .WithMany(p => p.PostComments)  // Assumes Post entity has ICollection<Comment> Comments
+                      .WithMany(p => p.PostComments)
                       .HasForeignKey(c => c.PostId)
-                      .OnDelete(DeleteBehavior.Restrict); // Tránh xóa cascade
-
-                // Quan hệ đệ quy với ParentComment (1 Comment có thể là cha của nhiều Comment)
+                      .OnDelete(DeleteBehavior.Restrict);
                 entity.HasOne(c => c.ParentComment)
-                      .WithMany() // Không cần collection ở Comment cho ParentComment
+                      .WithMany()
                       .HasForeignKey(c => c.ParentCommentId)
-                      .OnDelete(DeleteBehavior.Restrict); // Ngăn xóa cascade để tránh vòng lặp
-
-                // Cấu hình ICollection<CommentUpvote> và ICollection<CommentDevote>
+                      .OnDelete(DeleteBehavior.Restrict);
                 entity.HasMany(c => c.CommentUpvotes)
-                      .WithOne(cu => cu.Comment)  // Assumes CommentUpvote has Comment navigation property
+                      .WithOne(cu => cu.Comment)
                       .HasForeignKey(cu => cu.CommentId)
                       .OnDelete(DeleteBehavior.Cascade);
-
                 entity.HasMany(c => c.CommentDevotes)
-                      .WithOne(cd => cd.Comment)  // Assumes CommentDevote has Comment navigation property
+                      .WithOne(cd => cd.Comment)
                       .HasForeignKey(cd => cd.CommentId)
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Cấu hình quan hệ giữa Wiki và Product: 1-n
             modelBuilder.Entity<Product>()
-                        .HasOne(p => p.Wiki)
-                        .WithMany(w => w.AttachedProducts)
-                        .HasForeignKey(p => p.WikiId);
-            //.OnDelete(DeleteBehavior.SetNull); // Khi xóa Wiki, WikiId trong Product được đặt thành null
+                .HasOne(p => p.Wiki)
+                .WithMany(w => w.AttachedProducts)
+                .HasForeignKey(p => p.WikiId);
 
             modelBuilder.Entity<Wiki>()
-            .HasMany(w => w.AttachedProducts) // Wiki có nhiều Product
-            .WithOne(p => p.Wiki) // Product có một Wiki
-            .HasForeignKey(p => p.WikiId); // Khóa ngoại trong Product
-            //.OnDelete(DeleteBehavior.SetNull); // Set WikiId = null nếu Wiki bị xóa nếu có Product đang tham chiếu
+                .HasMany(w => w.AttachedProducts)
+                .WithOne(p => p.Wiki)
+                .HasForeignKey(p => p.WikiId);
 
-
-            // Cấu hình quan hệ giữa Vote và User: 1-n
             modelBuilder.Entity<Vote>(entity =>
             {
                 entity.HasKey(v => new { v.UserId, v.TargetId, v.TargetType });
-
                 entity.HasOne(v => v.User)
                       .WithMany(u => u.Votes)
                       .HasForeignKey(v => v.UserId)
@@ -123,35 +109,43 @@ namespace Infrastructure.Persistence
                 p.HasMany(p => p.ProductImages)
                     .WithOne(p => p.Product)
                     .HasForeignKey(p => p.ProductId);
-
                 p.HasOne(p => p.Seller)
-                .WithMany()
-                .HasForeignKey(p => p.SellerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+                    .WithMany()
+                    .HasForeignKey(p => p.SellerId)
+                    .OnDelete(DeleteBehavior.Restrict);
                 p.HasOne(p => p.Wiki)
-                .WithMany()
-                .HasForeignKey(p => p.WikiId)
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithMany()
+                    .HasForeignKey(p => p.WikiId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Order>(p =>
             {
                 p.HasKey(p => p.Id);
                 p.HasOne(p => p.User)
-                .WithMany()
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                    .WithMany()
+                    .HasForeignKey(p => p.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
                 p.HasOne(p => p.Product)
-                .WithMany()
-                .HasForeignKey(p => p.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+                    .WithMany()
+                    .HasForeignKey(p => p.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Membership>(p =>
             {
                 p.HasKey(p => p.Id);
+            });
+            // Configure Contribution entity
+            modelBuilder.Entity<Contribution>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+                entity.HasOne(c => c.Wiki)
+                      .WithMany(w => w.Contributions)
+                      .HasForeignKey(c => c.WikiId);
+                entity.HasOne(c => c.Contributor)
+                      .WithMany(u => u.Contributions)
+                      .HasForeignKey(c => c.ContributorId);
             });
 
             base.OnModelCreating(modelBuilder);
