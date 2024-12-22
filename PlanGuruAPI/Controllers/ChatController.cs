@@ -53,6 +53,10 @@ namespace PlanGuruAPI.Controllers
             var listChatMessage = await _context.ChatMessages.Where(p => p.ChatRoomId == chatRoomId).ToListAsync();
             var listChatMessageReadDTO = new List<ChatMessageReadDTO>();
             var chatRoom = await _context.ChatRooms.FindAsync(chatRoomId);
+            if(chatRoom == null)
+            {
+                return BadRequest("Can't found this ChatRoom");
+            }
             var firstUser = await _context.Users.FindAsync(chatRoom.FirstUserId);
             var secondUser = await _context.Users.FindAsync(chatRoom.SecondUserId);
             foreach (var chatMessage in listChatMessage)
@@ -83,7 +87,7 @@ namespace PlanGuruAPI.Controllers
             }
             var chatRoom = await _context.ChatRooms.Where(
                 p => p.FirstUserId == request.UserSendId && p.SecondUserId == request.UserReceiveId ||
-                    p.SecondUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
+                    p.FirstUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
             if (chatRoom == null)
             {
                 chatRoom = new ChatRoom()
@@ -119,7 +123,7 @@ namespace PlanGuruAPI.Controllers
             }
             var chatRoom = await _context.ChatRooms.Where(
                 p => p.FirstUserId == request.UserSendId && p.SecondUserId == request.UserReceiveId ||
-                    p.SecondUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
+                    p.FirstUserId == request.UserReceiveId && p.SecondUserId == request.UserSendId).FirstOrDefaultAsync();
             if (chatRoom == null)
             {
                 chatRoom = new ChatRoom()
