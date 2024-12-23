@@ -70,14 +70,15 @@ namespace PlanGuruAPI
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
+                options.AddPolicy("AllowSpecificOrigin", policy =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
-                           .AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .AllowCredentials();
+                    policy.WithOrigins("http://localhost:3000") // Allow this origin
+                          .AllowAnyMethod()                    // Allow all HTTP methods
+                          .AllowAnyHeader()                    // Allow all headers
+                          .AllowCredentials();                 // Allow cookies/auth tokens
                 });
             });
+
 
             var app = builder.Build();
 
@@ -93,7 +94,7 @@ namespace PlanGuruAPI
 
             app.seedData();
 
-            app.UseCors("AllowAll");
+            app.UseCors("AllowSpecificOrigin");
 
             // graphql
             app.UseGraphQL<WikiSchema>();
@@ -101,7 +102,7 @@ namespace PlanGuruAPI
 
             app.MapControllers();
 
-            app.MapHub<ChatHub>("/chatHub").RequireCors("AllowAll");
+            app.MapHub<ChatHub>("/chatHub").RequireCors("AllowSpecificOrigin");
 
             app.Run();
         }
