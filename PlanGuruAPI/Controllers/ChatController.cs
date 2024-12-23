@@ -4,9 +4,12 @@ using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using PlanGuruAPI.DTOs.ChatDTOs;
+using PlanGuruAPI.Hubs;
+using System.Linq.Expressions;
 
 namespace PlanGuruAPI.Controllers
 {
@@ -16,11 +19,13 @@ namespace PlanGuruAPI.Controllers
     {
         private readonly IMapper _mapper;
         private readonly PlanGuruDBContext _context;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatController(IMapper mapper, PlanGuruDBContext context)
+        public ChatController(IMapper mapper, PlanGuruDBContext context, IHubContext<ChatHub> hubContext)
         {
             _mapper = mapper;
             _context = context;
+            _hubContext = hubContext;
         }
         [HttpGet("users/{userId}/chatRooms")]
         public async Task<IActionResult> GetAllChatRoomForUser(Guid userId)
@@ -109,7 +114,8 @@ namespace PlanGuruAPI.Controllers
                 Type = "Text"
             };
             await _context.ChatMessages.AddAsync(chatMessage);
-            await _context.SaveChangesAsync();  
+            await _context.SaveChangesAsync();
+            await _hubContext.Clients.All.SendAsync("NewMessage", secondUser.Id.ToString());
             return Ok("Send text successfully");
         }
         [HttpPost("sendMedia")]

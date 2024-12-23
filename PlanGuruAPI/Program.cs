@@ -17,6 +17,7 @@ using PlanGuruAPI.GraphQL.Mutations;
 using PlanGuruAPI.GraphQL.Queries;
 using PlanGuruAPI.GraphQL.Schemas;
 using PlanGuruAPI.GraphQL.Types;
+using PlanGuruAPI.Hubs;
 using PlanGuruAPI.Mapping;
 using Serilog;
 
@@ -59,11 +60,23 @@ namespace PlanGuruAPI
             builder.Services.AddScoped<WikiQuery>();
             builder.Services.AddScoped<WikiMutation>();
             builder.Services.AddScoped<WikiSchema>();
+            builder.Services.AddSignalR();
 
             builder.Services.AddMemoryCache(options =>
             {
                 options.SizeLimit = 120; // Giới hạn cache tối đa là 120 mục
                 //options.ExpirationScanFrequency = TimeSpan.FromMinutes(5); // Tần suất quét để xóa cache hết hạn
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
             });
 
             var app = builder.Build();
@@ -80,11 +93,15 @@ namespace PlanGuruAPI
 
             app.seedData();
 
+            app.UseCors("AllowAll");
+
             // graphql
             app.UseGraphQL<WikiSchema>();
             app.UseGraphQLGraphiQL("/ui/graphql");
 
             app.MapControllers();
+
+            app.MapHub<ChatHub>("/chatHub").RequireCors("AllowAll");
 
             app.Run();
         }
