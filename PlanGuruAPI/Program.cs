@@ -88,20 +88,20 @@ namespace PlanGuruAPI
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-
-            //app.UseExceptionHandler("/error");
-
-            app.seedData();
-
+            // Ensure CORS is applied before any endpoints that require it
             app.UseCors("AllowSpecificOrigin");
 
-            // graphql
+            app.UseAuthorization();
+
+            // Seed data if necessary
+            app.seedData();
+
+            // GraphQL middleware
             app.UseGraphQL<WikiSchema>();
             app.UseGraphQLGraphiQL("/ui/graphql");
 
+            // Map controllers and SignalR hubs
             app.MapControllers();
-
             app.MapHub<ChatHub>("/chatHub").RequireCors("AllowSpecificOrigin");
 
             app.Run();
