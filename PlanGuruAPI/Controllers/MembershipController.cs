@@ -25,13 +25,13 @@ namespace PlanGuruAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var listMembership = await _context.Memeberships.ToListAsync();
+            var listMembership = await _context.Memberships.ToListAsync();
             return Ok(listMembership);
         }
         [HttpGet("{membershipId}")]
         public async Task<IActionResult> GetById(Guid membershipId)
         {
-            var membership = await _context.Memeberships.FindAsync(membershipId);       
+            var membership = await _context.Memberships.FindAsync(membershipId);       
             if (membership == null)
             {
                 return NotFound("Can't find this membership");
@@ -44,14 +44,14 @@ namespace PlanGuruAPI.Controllers
             var newMembership = _mapper.Map<Membership>(membershipCreateDTO);
             newMembership.Id = Guid.NewGuid();  
             newMembership.CreatedAt = DateTime.Now; 
-            await _context.Memeberships.AddAsync(newMembership);    
+            await _context.Memberships.AddAsync(newMembership);    
             await _context.SaveChangesAsync();  
             return Ok(newMembership);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateMembership(MembershipUpdateDTO membership)
         {
-            var existMembership = await _context.Memeberships.FindAsync(membership.Id);
+            var existMembership = await _context.Memberships.FindAsync(membership.Id);
             if (existMembership == null)
             {
                 return BadRequest("This membership is not exist");
@@ -66,12 +66,12 @@ namespace PlanGuruAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteMembership(Guid id)
         {
-            var existMembership = await _context.Memeberships.FindAsync(id);
+            var existMembership = await _context.Memberships.FindAsync(id);
             if (existMembership == null)
             {
                 return BadRequest("This membership is not exist");
             }
-            _context.Memeberships.Remove(existMembership);    
+            _context.Memberships.Remove(existMembership);    
             await _context.SaveChangesAsync();      
             return Ok("Deleted successfully");
         }
