@@ -34,7 +34,8 @@ namespace Infrastructure.Persistence
         public DbSet<GroupUser> GroupUsers { get; set; }
         public DbSet<Contribution> Contributions { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Membership> Memeberships { get; set; }     
+        public DbSet<Membership> Memberships { get; set; }
+        public DbSet<PostImage> PostImages { get; set; }        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

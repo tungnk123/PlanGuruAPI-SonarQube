@@ -4,9 +4,9 @@
         string Title,
         string Description,
         Guid UserId,
-        string ImageUrl,
         string Tag,
-        string Background
+        string Background,
+        List<string> Images
     );
 
 }

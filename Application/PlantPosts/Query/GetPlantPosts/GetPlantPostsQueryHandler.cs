@@ -48,6 +48,9 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 var hasUpvoted = await postVoteStrategy.HasUpvotedAsync(request.UserId, post.Id);
                 var hasDevoted = await postVoteStrategy.HasDevotedAsync(request.UserId, post.Id);
 
+                var postImages = await _postRepo.GetImageForPostAsync(post.Id);
+                var postImagesString = postImages.Select(p => p.Image);
+
                 var postDto = new PlantPostDto
                 {
                     PostId = post.Id,
@@ -56,7 +59,6 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                     UserAvatar = post.User.Avatar,
                     Title = post.Title,
                     Description = post.Description,
-                    ImageUrl = post.ImageUrl,
                     Tag = post.Tag,
                     Background = post.Background,
                     NumberOfUpvote = upvoteCount,
@@ -65,7 +67,8 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                     NumberOfShare = post.PostShares.Count,
                     CreatedDate = FormatCreatedAt(post.CreatedAt),
                     HasUpvoted = hasUpvoted,
-                    HasDevoted = hasDevoted
+                    HasDevoted = hasDevoted,
+                    Images = postImagesString
                 };
                 postDtos.Add(postDto);
             }

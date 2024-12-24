@@ -37,6 +37,10 @@ namespace PlanGuruAPI.Controllers
             foreach (var post in listUnApprovedPost)
             {
                 var user = await _userRepository.GetByIdAsync(post.UserId);
+
+                var listImages = await _planPostRepository.GetImageForPostAsync(post.Id);
+                var listImagesString = listImages.Select(p => p.Image);
+
                 var postReadDTO = new PostReadDTO()
                 {
                     UserId = user.UserId,
@@ -45,14 +49,14 @@ namespace PlanGuruAPI.Controllers
                     Background = post.Background,
                     CreatedDate = FormatCreatedAt(post.CreatedAt),
                     Description = post.Description,
-                    ImageUrl = post.ImageUrl,
                     NumberOfComment = post.PostComments.Count,
                     NumberOfDevote = post.PostDevotes.Count,
                     NumberOfShare = post.PostShares.Count,
                     NumberOfUpvote = post.PostUpvotes.Count,
                     PostId = post.Id,
                     Tag = post.Tag,
-                    Title = post.Title
+                    Title = post.Title,
+                    Images = listImagesString
                 };
                 listUnApprovedPostReadDTO.Add(postReadDTO);
             }

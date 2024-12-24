@@ -14,7 +14,6 @@ namespace Application.PlantPosts.Common.GetPlantPosts
         public string UserAvatar { get; init; }
         public string Title { get; init; }
         public string Description { get; init; }
-        public string ImageUrl { get; init; }
         public string Tag { get; init; }
         public string Background { get; init; }
         public int NumberOfUpvote { get; init; }
@@ -24,5 +23,6 @@ namespace Application.PlantPosts.Common.GetPlantPosts
         public string CreatedDate { get; init; }
         public bool HasUpvoted { get; init; }
         public bool HasDevoted { get; init; }
+        public IEnumerable<string> Images { get; set; }    
     }
 }

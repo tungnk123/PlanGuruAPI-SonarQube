@@ -60,7 +60,10 @@ namespace PlanGuruAPI
             builder.Services.AddScoped<WikiQuery>();
             builder.Services.AddScoped<WikiMutation>();
             builder.Services.AddScoped<WikiSchema>();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
 
             builder.Services.AddMemoryCache(options =>
             {
@@ -72,7 +75,7 @@ namespace PlanGuruAPI
             {
                 options.AddPolicy("AllowSpecificOrigin", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000") // Allow this origin
+                    policy.WithOrigins("http://192.168.1.44:3000") // Allow this origin
                           .AllowAnyMethod()                    // Allow all HTTP methods
                           .AllowAnyHeader()                    // Allow all headers
                           .AllowCredentials();                 // Allow cookies/auth tokens
@@ -91,20 +94,20 @@ namespace PlanGuruAPI
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
-
-            //app.UseExceptionHandler("/error");
-
-            app.seedData();
-
+            // Ensure CORS is applied before any endpoints that require it
             app.UseCors("AllowSpecificOrigin");
 
-            // graphql
+            app.UseAuthorization();
+
+            // Seed data if necessary
+            app.seedData();
+
+            // GraphQL middleware
             app.UseGraphQL<WikiSchema>();
             app.UseGraphQLGraphiQL("/ui/graphql");
 
+            // Map controllers and SignalR hubs
             app.MapControllers();
-
             app.MapHub<ChatHub>("/chatHub").RequireCors("AllowSpecificOrigin");
 
             app.Run();

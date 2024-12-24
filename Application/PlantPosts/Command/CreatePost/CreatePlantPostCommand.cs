@@ -12,7 +12,7 @@ namespace Application.PlantPosts.Command.CreatePost
         string Title,
         string Description,
         Guid UserId,
-        string ImageUrl,
+        List<string> Images,
         string Tag,
         string Background
     ) : IRequest<CreatePostResult>;
