@@ -29,6 +29,7 @@ namespace Infrastructure
                 SeedContributions(context);
                 SeedPosts(context, serviceScope);
                 SeedProducts(context);
+                SeedMemberships(context);
             }
         }
     }
