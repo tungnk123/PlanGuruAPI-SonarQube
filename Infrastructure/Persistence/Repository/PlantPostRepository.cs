@@ -126,5 +126,16 @@ namespace Infrastructure.Persistence.Repository
                 .Include(p => p.PostShares)
                 .ToListAsync();
         }
+
+        public async Task<List<PostImage>> GetImageForPostAsync(Guid postId)
+        {
+            return await _context.PostImages.Where(p => p.PostId == postId).ToListAsync();
+        }
+
+        public async Task CreatePostImage(PostImage postImage)
+        {
+            await _context.PostImages.AddAsync(postImage);
+            await _context.SaveChangesAsync();  
+        }
     }
 }

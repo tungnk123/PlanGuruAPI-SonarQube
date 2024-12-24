@@ -27,7 +27,6 @@ namespace Application.PlantPosts.Command.CreatePost
                 Title = request.Title,
                 Description = request.Description,
                 UserId = request.UserId,
-                ImageUrl = request.ImageUrl,
                 Tag = request.Tag,
                 Background = request.Background,
                 CreatedAt = DateTime.UtcNow,
@@ -35,6 +34,17 @@ namespace Application.PlantPosts.Command.CreatePost
             };
 
             await _postRepo.CreatePostAsync(post);
+
+            foreach (var item in request.Images)
+            {
+                var postImage = new PostImage()
+                {
+                    Image = item,
+                    Post = post,
+                    PostId = post.Id
+                };
+                await _postRepo.CreatePostImage(postImage);
+            }
 
             return new CreatePostResult("success", post.Id, "Post created successfully");
         }

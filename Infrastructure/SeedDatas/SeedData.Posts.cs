@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interface.Persistence;
 using Domain.Entities;
+using Domain.Entities.WikiEntities;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repository;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -49,10 +50,32 @@ namespace Infrastructure
                             UserId = firstUserId,
                             Title = $"Post Title {i + 1}",
                             Description = $"This is the description for post {i + 1}.",
-                            ImageUrl = "https://i.pinimg.com/736x/d9/95/e3/d995e3f52c60ff8bc39f0ae2303bec6f.jpg",
                             Tag = randomTag,
                             Background = "https://i.pinimg.com/736x/6b/8d/55/6b8d557af9e7122dbd7eec1c2593232b.jpg"
                         };
+                        var postImages = new PostImage()
+                        {
+                            Image = "https://i.pinimg.com/736x/d9/95/e3/d995e3f52c60ff8bc39f0ae2303bec6f.jpg",
+                            Post = post,
+                            PostId = post.Id,
+                        };
+                        var postImages2 = new PostImage()
+                        {
+                            Image = "https://i.pinimg.com/736x/8c/3e/89/8c3e8974af089b504f7bb236dd395eee.jpg",
+                            Post = post,
+                            PostId = post.Id,
+                        };
+                        var postImages3 = new PostImage()
+                        {
+                            Image = "https://i.pinimg.com/236x/1c/f0/9f/1cf09f634edb5fea79f9298e412700f0.jpg",
+                            Post = post,
+                            PostId = post.Id,
+                        };
+                        
+                        context.PostImages.Add(postImages);
+                        context.PostImages.Add(postImages2);
+                        context.PostImages.Add(postImages3);
+
                         if (i < 10) post.IsApproved = true;
                         context.Posts.Add(post);
                     }

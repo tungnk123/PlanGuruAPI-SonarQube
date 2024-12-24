@@ -11,6 +11,8 @@ namespace Application.Common.Interface.Persistence
     {
         Task<Post> CreatePostAsync(Post post);
         Task<Post> GetPostByIdAsync(Guid postId);
+        Task CreatePostImage(PostImage postImage);
+        Task<List<PostImage>> GetImageForPostAsync(Guid postId);
         IQueryable<Post> QueryPosts();
         Task UpdatePostAsync(Post post);
         Task DeletePostAsync(Guid postId);
