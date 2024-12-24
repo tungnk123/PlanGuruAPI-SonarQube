@@ -16,9 +16,6 @@ namespace Application.PlantPosts.Command.CreatePost
                 .Must(userId => Guid.TryParse(userId.ToString(), out _))
                 .WithMessage("UserId phải là một GUID hợp lệ");
 
-            RuleFor(p => p.Tag)
-                .NotEmpty().WithMessage("Tag không được để trống");
-
             RuleFor(p => p.Background)
                 .NotEmpty().WithMessage("Background không được để trống");
         }
