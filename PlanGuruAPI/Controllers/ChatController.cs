@@ -155,6 +155,7 @@ namespace PlanGuruAPI.Controllers
                 await _context.ChatMessages.AddAsync(chatMessage);  
             }
             await _context.SaveChangesAsync();
+            await _hubContext.Clients.All.SendAsync("NewMessage", secondUser.Id.ToString());
             return Ok("Send media successfully");
         }
     }
