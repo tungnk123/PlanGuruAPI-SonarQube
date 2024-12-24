@@ -60,7 +60,10 @@ namespace PlanGuruAPI
             builder.Services.AddScoped<WikiQuery>();
             builder.Services.AddScoped<WikiMutation>();
             builder.Services.AddScoped<WikiSchema>();
-            builder.Services.AddSignalR();
+            builder.Services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+            });
 
             builder.Services.AddMemoryCache(options =>
             {
