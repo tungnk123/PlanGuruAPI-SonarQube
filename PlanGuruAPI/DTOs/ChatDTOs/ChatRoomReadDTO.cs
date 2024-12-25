@@ -7,5 +7,7 @@
         public string Name { get; set; }
         public string Avatar { get; set; }
         public bool IsOnline { get; set; } = false;
+        public string? LastMessage { get; set; }
+        public DateTime? LastMessageTime { get; set; }       
     }
 }
