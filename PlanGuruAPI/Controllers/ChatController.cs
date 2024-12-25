@@ -40,16 +40,23 @@ namespace PlanGuruAPI.Controllers
                 if (friend == null) {
                     return BadRequest("Can't find this user");
                 }
+                var lastMessage = await _context.ChatMessages.Where(p => p.ChatRoomId == chatRoom.ChatRoomId).OrderByDescending(p => p.SendDate).FirstOrDefaultAsync();
                 var chatRoomReadDTO = new ChatRoomReadDTO()
                 {
                     ChatRoomId = chatRoom.ChatRoomId,
                     UserId = friend.UserId,
                     Avatar = friend.Avatar,
                     Name = friend.Name,
-                    IsOnline = false
+                    IsOnline = false,
                 };
+                if(lastMessage != null)
+                {
+                    chatRoomReadDTO.LastMessage = lastMessage.Message;
+                    chatRoomReadDTO.LastMessageTime = lastMessage.SendDate;
+                }
                 listChatRoomReadDTO.Add(chatRoomReadDTO);
             }
+            listChatRoomReadDTO = listChatRoomReadDTO.OrderByDescending(p => p.LastMessageTime).ToList();
             return Ok(listChatRoomReadDTO);
         }
         [HttpGet("{chatRoomId}")]

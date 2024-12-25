@@ -32,7 +32,8 @@ namespace Infrastructure
                     SellerId = firstUser.UserId,
                     ProductName = $"Product {i + 1}",
                     Description = $"This is the description for product {i + 1}.",
-                    Price = (double)(10.0m * (i + 1))
+                    Price = (double)(10.0m * (i + 1)),
+                    Quantity = 10
                 };
                 context.Products.Add(product);
 
