@@ -1,4 +1,4 @@
-﻿using Application.Common.Interface.Persistence;
+using Application.Common.Interface.Persistence;
 using Domain.Entities.WikiEntities;
 using Domain.Entities.WikiService;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +6,8 @@ using PlanGuruAPI.DTOs.WikiDTOs;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
 
 namespace PlanGuruAPI.Controllers
 {
@@ -58,7 +60,34 @@ namespace PlanGuruAPI.Controllers
                 return NotFound();
             }
 
-            return Ok(new { OriginalContent = originalContent, ContributionContent = contributionContent });
+            var diffBuilder = new InlineDiffBuilder(new DiffPlex.Differ());
+            var diff = diffBuilder.BuildDiffModel(originalContent, contributionContent);
+
+            var diffLines = new List<DiffLine>();
+            foreach (var line in diff.Lines)
+            {
+                var diffType = line.Type switch
+                {
+                    ChangeType.Inserted => DiffType.Added,
+                    ChangeType.Deleted => DiffType.Deleted,
+                    _ => DiffType.Unchanged
+                };
+
+                diffLines.Add(new DiffLine
+                {
+                    Content = line.Text,
+                    Type = diffType
+                });
+            }
+
+            var result = new ContentDiffResult
+            {
+                OriginalContent = originalContent,
+                ContributionContent = contributionContent,
+                DiffLines = diffLines
+            };
+
+            return Ok(result);
         }
 
         [HttpPost("{wikiId}/contributions/{contributionId}/reject")]
