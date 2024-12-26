@@ -47,6 +47,17 @@ namespace PlanGuruAPI.Controllers
             var listOrder = await _context.Orders.Where(p => p.UserId == userId).ToListAsync();
             return Ok(_mapper.Map<List<OrderReadDTO>>(listOrder));
         }
+        [HttpGet("shops/{shopId}")]
+        public async Task<IActionResult> GetListOrderByShopId(Guid shopId)
+        {
+            var checkShop = await _context.Users.FindAsync(shopId);
+            if (checkShop == null)
+            {
+                return BadRequest("This shop is not exist");
+            }
+            var listOrder = await _context.Orders.Where(p => p.Product.SellerId == shopId).ToListAsync();
+            return Ok(_mapper.Map<List<OrderReadDTO>>(listOrder));
+        }
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderCreateDTO order)
         {
