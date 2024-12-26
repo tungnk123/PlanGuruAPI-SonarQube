@@ -1,4 +1,4 @@
-﻿using Domain.Entities.ECommerce;
+using Domain.Entities.ECommerce;
 using Domain.Entities.WikiEntities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,8 @@ namespace Domain.Entities
         public string Avatar { get; set; }
         public string Password { get; set; }
         public bool IsHavePremium { get; set; }        
+        public int TotalExperiencePoints { get; set; } = 0;
+        public int TotalContributionPoints { get; set; } = 0;
         public ICollection<Post> Posts { get; set; }    
         public ICollection<Comment> Comments { get; set; }
         public ICollection<PostDevote> PostDevotes { get; set; }

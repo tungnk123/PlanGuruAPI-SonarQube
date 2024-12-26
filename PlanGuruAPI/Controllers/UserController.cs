@@ -1,4 +1,4 @@
-﻿using Application.Users.Command.SetNameAndAvatar;
+using Application.Users.Command.SetNameAndAvatar;
 using Application.Users.Command.SignUp;
 using Application.Users.Common;
 using Application.Users.Querry.Login;
@@ -108,6 +108,50 @@ namespace PlanGuruAPI.Controllers
             user.IsHavePremium = false;
             await _context.SaveChangesAsync();
             return Ok("Remove premium from this account successfully");
+        }
+
+        [HttpGet("{userId}/experience-points")]
+        public async Task<IActionResult> GetExperiencePoints(Guid userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            return Ok(new { experiencePoints = user.TotalExperiencePoints });
+        }
+
+        [HttpPut("{userId}/experience-points")]
+        public async Task<IActionResult> UpdateExperiencePoints(Guid userId, [FromBody] int points)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            user.TotalExperiencePoints = points;
+            await _context.SaveChangesAsync();
+            return Ok(new { experiencePoints = user.TotalExperiencePoints });
+        }
+
+        [HttpGet("{userId}/contribution-points")]
+        public async Task<IActionResult> GetContributionPoints(Guid userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            return Ok(new { contributionPoints = user.TotalContributionPoints });
+        }
+
+        [HttpPut("{userId}/contribution-points")]
+        public async Task<IActionResult> UpdateContributionPoints(Guid userId, [FromBody] int points)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            user.TotalContributionPoints = points;
+            await _context.SaveChangesAsync();
+            return Ok(new { contributionPoints = user.TotalContributionPoints });
         }
     }
 }
