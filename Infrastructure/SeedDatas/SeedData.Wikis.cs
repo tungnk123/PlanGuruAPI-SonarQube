@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.WikiService;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,19 @@ namespace Infrastructure
             }
 
             context.SaveChanges();
+
+            var firstWiki = context.Wikis.FirstOrDefault();
+            var firstUser = context.Users.FirstOrDefault();
+
+            if (firstWiki == null || firstUser == null)
+            {
+                Console.WriteLine("No wikis or users found.");
+                return;
+            }
+            var firstWikiId = firstWiki.Id;
+            var firstUserId = firstUser.UserId;
+
+            SeedContributions(context, firstWikiId, firstUserId);
         }
     }
 }

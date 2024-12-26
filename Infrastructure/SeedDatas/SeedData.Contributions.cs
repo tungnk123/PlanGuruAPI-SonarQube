@@ -10,23 +10,20 @@ namespace Infrastructure
 {
     public static partial class SeedData
     {
-        public static void SeedContributions(PlanGuruDBContext context)
+        public static void SeedContributions(PlanGuruDBContext context, Guid wikiId, Guid userId)
         {
             Console.WriteLine("Seeding Contributions...");
-
             for (int i = 0; i < 5; i++)
             {
                 var contribution = new Contribution
                 {
-                    Id = Guid.NewGuid(),
-                    ContributorId = Guid.NewGuid(), // Replace with existing user ID if needed
+                    WikiId = wikiId,
+                    ContributorId = userId,
                     Content = $"Contribution content {i + 1}",
                     CreatedAt = DateTime.UtcNow
                 };
-
                 context.Contributions.Add(contribution);
             }
-
             context.SaveChanges();
         }
     }

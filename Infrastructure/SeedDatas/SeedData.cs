@@ -26,7 +26,6 @@ namespace Infrastructure
                 // Gọi các phần seed khác
                 SeedUsers(context);
                 SeedWikis(context);
-                SeedContributions(context);
                 SeedPosts(context, serviceScope);
                 SeedProducts(context);
                 SeedMemberships(context);

@@ -121,8 +121,9 @@ namespace PlanGuruAPI.Controllers
         public async Task<IActionResult> GetWikiCards()
         {
             var wikis = await _wikiRepository.GetAllAsync();
-            var wikiCards = wikis.Select(wiki => new WikiCardDto
+            var wikiCards = wikis.Select(wiki => new
             {
+                wiki.Id,
                 ThumbnailImageUrl = wiki.ThumbnailImageUrl,
                 Title = wiki.Title,
                 Upvotes = wiki.Upvotes,
