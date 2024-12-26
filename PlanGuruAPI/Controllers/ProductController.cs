@@ -130,5 +130,17 @@ namespace PlanGuruAPI.Controllers
 
             return Ok(_mapper.Map<ProductReadDTO>(existingProduct));
         }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(Guid productId)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null)
+            {
+                return BadRequest("This product is not exist");
+            }
+            _context.Products.Remove(product);  
+            await _context.SaveChangesAsync();
+            return Ok("Delete product successfully");
+        }
     }
 }
