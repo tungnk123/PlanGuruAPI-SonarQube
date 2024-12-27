@@ -1,11 +1,13 @@
 using Grpc.Net.Client;
+using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
+using PlanGuruAPI.DTOs.QuizDTOs;
 
 namespace Infrastructure.Services;
 
-public class QuizService
+public class QuizService : IQuizManager
 {
-    private readonly QuizManager.QuizManagerClient _client;
+    private readonly IQuizManager _client;
 
     public QuizService(IConfiguration configuration)
     {
@@ -14,49 +16,33 @@ public class QuizService
         _client = new QuizManager.QuizManagerClient(channel);
     }
 
-    public async Task<Quiz> CreateQuizAsync(string topic, int numberOfQuestions)
+    public async Task<QuizResponse> CreateQuizAsync(CreateQuizRequest request)
     {
-        var request = new CreateQuizRequest 
-        { 
-            Topic = topic, 
-            NumberOfQuestions = numberOfQuestions 
-        };
-        
-        var response = await _client.CreateQuizAsync(request);
-        return response.Quiz;
+        return await _client.CreateQuizAsync(request);
     }
 
-    public async Task<List<QuizSummary>> GetQuizListAsync(int pageSize = 10, string? pageToken = null)
+    public async Task<QuizResponse> GetQuizAsync(GetQuizRequest request)
     {
-        var request = new ListQuizzesRequest 
-        { 
-            PageSize = pageSize
-        };
-        if (!string.IsNullOrEmpty(pageToken))
-        {
-            request.PageToken = pageToken;
-        }
-        
-        var response = await _client.ListQuizzesAsync(request);
-        return response.Quizzes.ToList();
+        return await _client.GetQuizAsync(request);
     }
 
-    public async Task<QuizPlayResponse> GetQuizForPlayAsync(string quizId)
+    public async Task<QuizResponse> EditQuizAsync(EditQuizRequest request)
     {
-        var request = new GetQuizRequest { QuizId = quizId };
+        return await _client.EditQuizAsync(request);
+    }
+
+    public async Task<ListQuizzesResponse> ListQuizzesAsync(ListQuizzesRequest request)
+    {
+        return await _client.ListQuizzesAsync(request);
+    }
+
+    public async Task<QuizPlayResponse> GetQuizForPlayAsync(GetQuizRequest request)
+    {
         return await _client.GetQuizForPlayAsync(request);
     }
 
-    public async Task<bool> ValidateAnswerAsync(string quizId, string questionId, int selectedOptionIndex)
+    public async Task<ValidateAnswerResponse> ValidateAnswerAsync(ValidateAnswerRequest request)
     {
-        var request = new ValidateAnswerRequest 
-        { 
-            QuizId = quizId, 
-            QuestionId = questionId, 
-            SelectedOptionIndex = selectedOptionIndex 
-        };
-        
-        var response = await _client.ValidateAnswerAsync(request);
-        return response.IsCorrect;
+        return await _client.ValidateAnswerAsync(request);
     }
 }

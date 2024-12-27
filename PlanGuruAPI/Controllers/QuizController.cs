@@ -1,6 +1,6 @@
-using Infrastructure.Services;
-using Microsoft.AspNetCore.Authorization;
+using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using PlanGuruAPI.DTOs.QuizDTOs;
 
 namespace PlanGuruAPI.Controllers;
 
@@ -8,20 +8,54 @@ namespace PlanGuruAPI.Controllers;
 [Route("api/[controller]")]
 public class QuizController : ControllerBase
 {
-    private readonly QuizService _quizService;
+    private readonly IQuizManager _quizService;
 
-    public QuizController(QuizService quizService)
+    public QuizController(IQuizManager quizService)
     {
         _quizService = quizService;
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> CreateQuiz(string topic, int numberOfQuestions)
+    public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequest request)
     {
         try
         {
-            var quiz = await _quizService.CreateQuizAsync(topic, numberOfQuestions);
-            return Ok(quiz);
+            var response = await _quizService.CreateQuizAsync(request);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{quizId}")]
+    public async Task<IActionResult> GetQuiz(string quizId)
+    {
+        try
+        {
+            var request = new GetQuizRequest { QuizId = quizId };
+            var response = await _quizService.GetQuizAsync(request);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("{quizId}")]
+    public async Task<IActionResult> EditQuiz(string quizId, [FromBody] Quiz quiz)
+    {
+        try
+        {
+            var request = new EditQuizRequest 
+            { 
+                QuizId = quizId,
+                Quiz = quiz
+            };
+            var response = await _quizService.EditQuizAsync(request);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -30,12 +64,17 @@ public class QuizController : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetQuizList(int pageSize = 10, string? pageToken = null)
+    public async Task<IActionResult> GetQuizList([FromQuery] int pageSize = 10, [FromQuery] string pageToken = null)
     {
         try
         {
-            var quizzes = await _quizService.GetQuizListAsync(pageSize, pageToken);
-            return Ok(quizzes);
+            var request = new ListQuizzesRequest
+            {
+                PageSize = pageSize,
+                PageToken = pageToken
+            };
+            var response = await _quizService.ListQuizzesAsync(request);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -48,8 +87,9 @@ public class QuizController : ControllerBase
     {
         try
         {
-            var quiz = await _quizService.GetQuizForPlayAsync(quizId);
-            return Ok(quiz);
+            var request = new GetQuizRequest { QuizId = quizId };
+            var response = await _quizService.GetQuizForPlayAsync(request);
+            return Ok(response);
         }
         catch (Exception ex)
         {
@@ -58,12 +98,12 @@ public class QuizController : ControllerBase
     }
 
     [HttpPost("{quizId}/validate")]
-    public async Task<IActionResult> ValidateAnswer(string quizId, string questionId, int selectedOptionIndex)
+    public async Task<IActionResult> ValidateAnswer([FromBody] ValidateAnswerRequest request)
     {
         try
         {
-            var isCorrect = await _quizService.ValidateAnswerAsync(quizId, questionId, selectedOptionIndex);
-            return Ok(new { isCorrect });
+            var response = await _quizService.ValidateAnswerAsync(request);
+            return Ok(response);
         }
         catch (Exception ex)
         {
