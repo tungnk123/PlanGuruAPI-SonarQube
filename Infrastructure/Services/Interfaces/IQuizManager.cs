@@ -1,4 +1,4 @@
-using PlanGuruAPI.DTOs.QuizDTOs;
+using Domain.DTOs.QuizDTOs;
 
 namespace Infrastructure.Services.Interfaces;
 

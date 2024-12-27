@@ -1,6 +1,6 @@
+using Domain.DTOs.QuizDTOs;
 using Grpc.Core;
 using Infrastructure.Services.Interfaces;
-using PlanGuruAPI.DTOs.QuizDTOs;
 
 namespace Infrastructure.Services.Grpc;
 

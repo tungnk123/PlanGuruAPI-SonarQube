@@ -1,6 +1,6 @@
 using Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using PlanGuruAPI.DTOs.QuizDTOs;
+using Domain.DTOs.QuizDTOs;
 
 namespace PlanGuruAPI.Controllers;
 
