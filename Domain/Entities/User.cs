@@ -1,5 +1,6 @@
 using Domain.Entities.ECommerce;
 using Domain.Entities.WikiEntities;
+using Domain.Entities.WikiService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Domain.Entities
         public ICollection<Vote> Votes { get; set; }
         public ICollection<GroupUser> ListGroup { get; set; }  
         public ICollection<Group> ListOwnGroup { get; set; }
-        public ICollection<Contribution> Contributions { get; set; } 
-
+        public ICollection<Contribution> Contributions { get; set; }
+        public ICollection<Wiki> Wikis { get; set; }
     }
 }

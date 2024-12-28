@@ -132,5 +132,32 @@ namespace PlanGuruAPI.Controllers
 
             return Ok(wikiCards);
         }
+
+        // New API to get wiki by id
+        [HttpGet("GetWikiById/{id}")]
+        public async Task<IActionResult> GetWikiById(Guid id)
+        {
+            var wiki = await _wikiRepository.GetByIdAsync(id);
+            if (wiki == null)
+            {
+                return NotFound(new { Message = "Wiki not found." });
+            }
+
+            var response = new
+            {
+                wiki.Id,
+                wiki.Title,
+                wiki.Description,
+                wiki.ThumbnailImageUrl,
+                ContributorIds = wiki.Contributors.Select(c => c.UserId).ToList(),
+                wiki.AuthorId,
+                wiki.Upvotes,
+                wiki.Downvotes,
+                wiki.Content,
+                wiki.CreatedAt
+            };
+
+            return Ok(response);
+        }
     }
 }

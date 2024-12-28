@@ -1,4 +1,5 @@
-﻿using Domain.Entities.WikiService;
+﻿using Domain.Entities;
+using Domain.Entities.WikiService;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -13,6 +14,9 @@ namespace Infrastructure
     {
         public static void SeedWikis(PlanGuruDBContext context)
         {
+            var firstWiki = context.Wikis.FirstOrDefault();
+            var firstUser = context.Users.FirstOrDefault();
+
             Console.WriteLine("Seeding Wikis...");
 
             for (int i = 0; i < 5; i++)
@@ -21,7 +25,10 @@ namespace Infrastructure
                 {
                     Id = Guid.NewGuid(),
                     Title = $"Wiki Title {i + 1}",
+                    ThumbnailImageUrl = "https://imgt.taimienphi.vn/cf/Images/np/2022/8/16/anh-gai-xinh-cute-de-thuong-hot-girl-2.jpg",
                     Content = $"This is the content for wiki {i + 1}.",
+                    Contributors = new List<User> { firstUser },
+                    AuthorId = firstUser != null ? firstUser.UserId : Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -29,9 +36,6 @@ namespace Infrastructure
             }
 
             context.SaveChanges();
-
-            var firstWiki = context.Wikis.FirstOrDefault();
-            var firstUser = context.Users.FirstOrDefault();
 
             if (firstWiki == null || firstUser == null)
             {
