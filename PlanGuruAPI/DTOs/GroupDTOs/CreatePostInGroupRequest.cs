@@ -5,7 +5,7 @@
         string Description,
         Guid UserId,
         Guid GroupId,
-        string ImageUrl,
+        List<string> Images,            
         string Tag,
         string Background);
 }
