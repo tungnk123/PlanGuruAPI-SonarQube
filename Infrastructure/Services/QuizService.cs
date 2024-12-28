@@ -18,14 +18,23 @@ public class QuizServices : IQuizManager
 
     public async Task<QuizResponse> CreateQuizAsync(CreateQuizRequest request)
     {
-        var grpcRequest = new QuizService.CreateQuizRequest
+        try
         {
-            Topic = request.Topic,
-            NumberOfQuestions = request.NumberOfQuestions
-        };
-        
-        var response = await _client.CreateQuizAsync(grpcRequest);
-        return MapToQuizResponse(response);
+            var grpcRequest = new QuizService.CreateQuizRequest
+            {
+                Topic = request.Topic,
+                NumberOfQuestions = request.NumberOfQuestions
+            };
+
+            var response = await _client.CreateQuizAsync(grpcRequest);
+            return MapToQuizResponse(response);
+
+        }
+        catch (Exception e)
+        {
+
+            throw;
+        }
     }
 
     public async Task<QuizResponse> GetQuizAsync(GetQuizRequest request)

@@ -2,6 +2,8 @@
 using Application.Votes;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repository;
+using Infrastructure.Services;
+using Infrastructure.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -36,6 +38,7 @@ namespace Infrastructure
             services.AddScoped<IWikiRepository, WikiRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IVoteRepository, VoteRepository>();
+            services.AddScoped<IQuizManager, QuizServices>();
 
             return services;
         }
