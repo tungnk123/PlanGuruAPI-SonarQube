@@ -10,6 +10,8 @@ namespace Domain.Entities
     {
         public string GroupName { get; set; }
         public Guid MasterUserId { get; set; }
+        public string? Description { get; set; }
+        public string GroupImage { get; set; }      
         public virtual User MasterUser { get; set; }
         public ICollection<GroupUser> UsersInGroup { get; set; }        
         public ICollection<Post> PostInGroup { get; set; }  

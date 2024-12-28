@@ -78,7 +78,12 @@ namespace PlanGuruAPI
                     policy.WithOrigins("http://192.168.1.44:3000") // Allow this origin
                           .AllowAnyMethod()                    // Allow all HTTP methods
                           .AllowAnyHeader()                    // Allow all headers
-                          .AllowCredentials();                 // Allow cookies/auth tokens
+                          .AllowCredentials();
+
+                    policy.WithOrigins("http://localhost:3000") // Allow this origin
+                          .AllowAnyMethod()                    // Allow all HTTP methods
+                          .AllowAnyHeader()                    // Allow all headers
+                          .AllowCredentials();          // Allow cookies/auth tokens
                 });
             });
 

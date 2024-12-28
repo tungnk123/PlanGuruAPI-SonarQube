@@ -27,12 +27,14 @@ namespace PlanGuruAPI.Mapping
             CreateMap<CreatePostInGroupRequest, Post>().ReverseMap();
             CreateMap<Post, DTOs.PlantPostDTOs.PostReadDTO>().ReverseMap();
             CreateMap<PostInGroupDTO, Post>().ReverseMap()
+                .ForMember(dest => dest.PostId, opt => opt.MapFrom(p => p.Id))
                 .ForMember(dest => dest.NumberOfComment, opt => opt.MapFrom(p => p.PostComments.Count))
                 .ForMember(dest => dest.NumberOfUpvote, opt => opt.MapFrom(p => p.PostUpvotes.Count))
                 .ForMember(dest => dest.NumberOfDevote, opt => opt.MapFrom(p => p.PostDevotes.Count))
                 .ForMember(dest => dest.NumberOfShare, opt => opt.MapFrom(p => p.PostShares.Count))
                 .ForMember(dest => dest.UserNickName, opt => opt.MapFrom(p => p.User.Name))
                 .ForMember(dest => dest.UserAvatar, opt => opt.MapFrom(p => p.User.Avatar))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(p => p.PostImages.Select(p => p.Image)))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(p => FormatCreatedAt(p.CreatedAt)));
 
 
@@ -45,7 +47,12 @@ namespace PlanGuruAPI.Mapping
             CreateMap<Order, OrderReadDTO>().ReverseMap();
             CreateMap<Order, OrderUpdateDTO>().ReverseMap();
             CreateMap<Order, OrderCreateDTO>().ReverseMap();    
-            CreateMap<Membership, MembershipCreateDTO>().ReverseMap();      
+            CreateMap<Membership, MembershipCreateDTO>().ReverseMap();
+
+            CreateMap<GroupReadDTO, Group>().ReverseMap()
+                 .ForMember(dest => dest.NumberOfMembers, opt => opt.MapFrom(p => p.UsersInGroup.Count))
+                 .ForMember(dest => dest.NumberOfPosts, opt => opt.MapFrom(p => p.PostInGroup.Count));   
+            
         }
 
         public static string FormatCreatedAt(DateTime createdAt)
