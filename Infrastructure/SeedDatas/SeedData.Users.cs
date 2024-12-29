@@ -42,7 +42,25 @@ namespace Infrastructure
                 Avatar = "https://i.pinimg.com/474x/80/47/73/804773eb125fdc39791be82b75686382.jpg",
                 Name = "namdam"
             };
+            User user3 = new User()
+            {
+                UserId = Guid.NewGuid(),
+                Email = "doanthanhtungnk123@gmail.com",
+                Password = "123",
+                Avatar = "https://i.pinimg.com/474x/80/47/73/804773eb125fdc39791be82b75686382.jpg",
+                Name = "tungnk123"
+            };
+            User admin = new User()
+            {
+                UserId = Guid.NewGuid(),
+                Email = "admin",
+                Password = "admin",
+                Avatar = "https://i.pinimg.com/474x/80/47/73/804773eb125fdc39791be82b75686382.jpg",
+                Name = "admin"
+            };
             context.Users.Add(user2);
+            context.Users.Add(user3);
+            context.Users.Add(admin);
             context.SaveChanges();
 
 
