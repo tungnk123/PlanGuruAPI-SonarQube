@@ -88,7 +88,19 @@ namespace PlanGuruAPI.Controllers
             {
                 return BadRequest("This order is not exist");
             }
-            order.Status = "Confirmed";
+            order.Status = "Not Paid";
+            await _context.SaveChangesAsync();
+            return Ok("Confirm order successfully");
+        }
+        [HttpPost("confirmPayment")]
+        public async Task<IActionResult> ConfirmPayment(Guid orderId)
+        {
+            var order = await _context.Orders.FindAsync(orderId);
+            if (order == null)
+            {
+                return BadRequest("This order is not exist");
+            }
+            order.Status = "Paid";
             await _context.SaveChangesAsync();
             return Ok("Confirm order successfully");
         }
