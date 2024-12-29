@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interface.Persistence;
+using Application.PlantPosts.Query.GetPlantPosts;
 using Domain.Entities;
 using Domain.Entities.WikiService;
 using Microsoft.AspNetCore.Mvc;
@@ -154,7 +155,7 @@ namespace PlanGuruAPI.Controllers
                 wiki.Upvotes,
                 wiki.Downvotes,
                 wiki.Content,
-                wiki.CreatedAt
+                CreatedAt = GetPlantPostsQueryHandler.FormatCreatedAt(wiki.CreatedAt)
             };
 
             return Ok(response);

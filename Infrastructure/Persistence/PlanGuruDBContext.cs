@@ -35,7 +35,35 @@ namespace Infrastructure.Persistence
         public DbSet<Contribution> Contributions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Membership> Memberships { get; set; }
-        public DbSet<PostImage> PostImages { get; set; }        
+        public DbSet<PostImage> PostImages { get; set; }
+
+        public override int SaveChanges()
+        {
+            SetAuditFields();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            SetAuditFields();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetAuditFields()
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is BaseEntity<Guid> && (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var entity = (BaseEntity<Guid>)entry.Entity;
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.UtcNow;
+                }
+                entity.LastModifiedAt = DateTime.UtcNow;
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
