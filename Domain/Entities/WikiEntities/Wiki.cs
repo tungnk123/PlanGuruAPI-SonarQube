@@ -1,4 +1,5 @@
-﻿using Domain.Entities.ECommerce;
+﻿using Domain.DTOs.QuizDTOs;
+using Domain.Entities.ECommerce;
 using Domain.Entities.WikiEntities;
 namespace Domain.Entities.WikiService
 {
@@ -16,6 +17,7 @@ namespace Domain.Entities.WikiService
         public int Downvotes { get; set; } = 0;
         public List<Contribution> Contributions { get; set; } = new();
         public string Content { get; set; } = string.Empty; // New field for content
+        public List<string> QuizIds { get; set; } = new();
 
     }
 }

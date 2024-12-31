@@ -1,4 +1,4 @@
-﻿using Application.Common.Interface.Persistence;
+using Application.Common.Interface.Persistence;
 using Application.PlantPosts.Query.GetPlantPosts;
 using Domain.Entities;
 using Domain.Entities.WikiService;
@@ -159,6 +159,37 @@ namespace PlanGuruAPI.Controllers
             };
 
             return Ok(response);
+        }
+
+        [HttpPost("AddQuizToWiki")]
+        public async Task<IActionResult> AddQuizToWiki([FromBody] AddQuizToWikiRequest request)
+        {
+            try
+            {
+                var wiki = await _wikiRepository.GetByIdAsync(request.WikiId);
+                if (wiki == null)
+                {
+                    return NotFound(new { Success = false, Message = "Wiki not found." });
+                }
+
+                if (wiki.QuizIds == null)
+                {
+                    wiki.QuizIds = new List<string>();
+                }
+
+                if (!wiki.QuizIds.Contains(request.QuizId))
+                {
+                    wiki.QuizIds.Add(request.QuizId);
+                    await _wikiRepository.UpdateWikiAsync(wiki, wiki.AttachedProducts?.Select(p => p.Id).ToList() ?? new List<Guid>());
+                    return Ok(new { Success = true, Message = "Quiz added to wiki successfully." });
+                }
+
+                return BadRequest(new { Success = false, Message = "Quiz already exists in wiki." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Success = false, Message = "An error occurred while adding quiz to wiki.", Error = ex.Message });
+            }
         }
     }
 }
