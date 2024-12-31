@@ -44,6 +44,20 @@ public class QuizController : ControllerBase
         }
     }
 
+    [HttpPost("GetListQuizzes")]
+    public async Task<List<QuizResponse>> GetQuizzesAsync(List<string> quizIds)
+    {
+        var quizResponses = new List<QuizResponse>();
+        foreach (var quizId in quizIds)
+        {
+            var request = new GetQuizRequest { QuizId = quizId };
+            var response = await _quizService.GetQuizAsync(request);
+            quizResponses.Add(response);
+        }
+        return quizResponses;
+    }
+
+
     [HttpPut("{quizId}")]
     public async Task<IActionResult> EditQuiz(string quizId, [FromBody] Quiz quiz)
     {
