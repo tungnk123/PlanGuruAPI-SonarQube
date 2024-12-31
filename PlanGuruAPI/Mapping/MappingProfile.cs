@@ -44,7 +44,8 @@ namespace PlanGuruAPI.Mapping
             CreateMap<Product, ProductCreateDTO>().ReverseMap()
                 .ForMember(dest => dest.ProductImages, opt => opt.Ignore());
 
-            CreateMap<Order, OrderReadDTO>().ReverseMap();
+            CreateMap<OrderReadDTO, Order>().ReverseMap()
+                .ForMember(dest => dest.SellerId, opt => opt.MapFrom(p => p.Product.SellerId));
             CreateMap<Order, OrderUpdateDTO>().ReverseMap();
             CreateMap<Order, OrderCreateDTO>().ReverseMap();    
             CreateMap<Membership, MembershipCreateDTO>().ReverseMap();
@@ -52,6 +53,8 @@ namespace PlanGuruAPI.Mapping
             CreateMap<GroupReadDTO, Group>().ReverseMap()
                  .ForMember(dest => dest.NumberOfMembers, opt => opt.MapFrom(p => p.UsersInGroup.Count))
                  .ForMember(dest => dest.NumberOfPosts, opt => opt.MapFrom(p => p.PostInGroup.Count));   
+
+            
             
         }
 

@@ -136,8 +136,76 @@ namespace Infrastructure
                 context.Groups.AddRange(groups);
                 context.GroupUsers.AddRange(groupUsers);
                 context.SaveChanges();
+
+                #endregion
+
+                var listUser = context.Users.Skip(2).ToList();
+                var listProduct = context.Products.ToList().Take(3);
+                foreach (var user in listUser)
+                {
+                    foreach (var item in listProduct)
+                    {
+                        for(int i = 0; i < 3; i++)
+                        {
+                            var order = new Order()
+                            {
+                                Id = Guid.NewGuid(),
+                                CreatedAt = DateTime.Now,
+                                LastModifiedAt = DateTime.Now,
+                                Product = item,
+                                ProductId = item.Id,
+                                User = user,
+                                UserId = user.Id,
+                                Quantity = 3,
+                                ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
+                                Status = "Not Paid"
+                            };
+                            context.Orders.Add(order);
+                        }
+                    }
+                    foreach (var item in listProduct)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            var order = new Order()
+                            {
+                                Id = Guid.NewGuid(),
+                                CreatedAt = DateTime.Now,
+                                LastModifiedAt = DateTime.Now,
+                                Product = item,
+                                ProductId = item.Id,
+                                User = user,
+                                UserId = user.Id,
+                                Quantity = 3,
+                                ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
+                                Status = "Paid"
+                            };
+                            context.Orders.Add(order);
+                        }
+                    }
+                    foreach (var item in listProduct)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            var order = new Order()
+                            {
+                                Id = Guid.NewGuid(),
+                                CreatedAt = DateTime.Now,
+                                LastModifiedAt = DateTime.Now,
+                                Product = item,
+                                ProductId = item.Id,
+                                User = user,
+                                UserId = user.Id,
+                                Quantity = 3,
+                                ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
+                                Status = "Success"
+                            };
+                            context.Orders.Add(order);
+                        }
+                    }
+                }
+                context.SaveChanges();
             }
-            #endregion
 
         }
     }

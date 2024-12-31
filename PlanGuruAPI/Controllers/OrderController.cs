@@ -23,13 +23,13 @@ namespace PlanGuruAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var listOrder = await _context.Orders.ToListAsync();
+            var listOrder = await _context.Orders.Include(p => p.Product).ToListAsync();
             return Ok(_mapper.Map<List<OrderReadDTO>>(listOrder));
         }
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrderById(Guid orderId)
         {
-            var order = await _context.Orders.FindAsync(orderId);   
+            var order = await _context.Orders.Include(p => p.Product).FirstOrDefaultAsync(p => p.Id == orderId);   
             if(order == null)
             {
                 return NotFound("Can't find this order");
@@ -44,7 +44,7 @@ namespace PlanGuruAPI.Controllers
             {
                 return BadRequest("This user is not exist");
             }
-            var listOrder = await _context.Orders.Where(p => p.UserId == userId).ToListAsync();
+            var listOrder = await _context.Orders.Include(p => p.Product).Where(p => p.UserId == userId).ToListAsync();
             return Ok(_mapper.Map<List<OrderReadDTO>>(listOrder));
         }
         [HttpGet("shops/{shopId}")]
@@ -55,7 +55,7 @@ namespace PlanGuruAPI.Controllers
             {
                 return BadRequest("This shop is not exist");
             }
-            var listOrder = await _context.Orders.Where(p => p.Product.SellerId == shopId).ToListAsync();
+            var listOrder = await _context.Orders.Include(p => p.Product).Where(p => p.Product.SellerId == shopId).ToListAsync();
             return Ok(_mapper.Map<List<OrderReadDTO>>(listOrder));
         }
         [HttpPost]
@@ -74,23 +74,11 @@ namespace PlanGuruAPI.Controllers
             var newOrder = _mapper.Map<Order>(order);   
             newOrder.Id = Guid.NewGuid();   
             newOrder.TotalPrice = order.Quantity * checkProduct.Price;
-            newOrder.Status = "Pending";
+            newOrder.Status = "Not Paid";
             newOrder.CreatedAt = DateTime.Now;
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
             return Ok(_mapper.Map<OrderReadDTO>(newOrder));
-        }
-        [HttpPost("confirmOrder")]
-        public async Task<IActionResult> ConfirmOrder(Guid orderId)
-        {
-            var order = await _context.Orders.FindAsync(orderId);
-            if(order == null)
-            {
-                return BadRequest("This order is not exist");
-            }
-            order.Status = "Not Paid";
-            await _context.SaveChangesAsync();
-            return Ok("Confirm order successfully");
         }
         [HttpPost("confirmPayment")]
         public async Task<IActionResult> ConfirmPayment(Guid orderId)
