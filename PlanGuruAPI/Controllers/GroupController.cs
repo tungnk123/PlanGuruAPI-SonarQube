@@ -40,9 +40,10 @@ namespace PlanGuruAPI.Controllers
             {
                 var checkInGroup = await _context.GroupUsers
                     .FirstOrDefaultAsync(p => p.UserId == userId && p.GroupId == item.Id);
-                if(checkInGroup != null)
+                item.Status = "Not joined";
+                if (checkInGroup != null)
                 {
-                    item.IsJoined = true;
+                    item.Status = checkInGroup.Status;
                 }
             }
             return Ok(listGroupDTO);
@@ -63,10 +64,11 @@ namespace PlanGuruAPI.Controllers
                     .FirstOrDefaultAsync(p => p.UserId == userId && p.GroupId == group.Id);
 
             var groupReadDTO = _mapper.Map<GroupReadDTO>(group);
+            groupReadDTO.Status = "Not joined";
 
             if (checkInGroup != null)
             {
-                groupReadDTO.IsJoined = true;
+                groupReadDTO.Status = checkInGroup.Status;
             }
 
             return Ok(groupReadDTO);
@@ -93,9 +95,10 @@ namespace PlanGuruAPI.Controllers
             {
                 var checkInGroup = await _context.GroupUsers
                     .FirstOrDefaultAsync(p => p.UserId == userId && p.GroupId == item.Id);
+                item.Status = "Not joined";
                 if (checkInGroup != null)
                 {
-                    item.IsJoined = true;
+                    item.Status = checkInGroup.Status;
                 }
             }
             return Ok(listGroupDTO);
@@ -113,9 +116,10 @@ namespace PlanGuruAPI.Controllers
             {
                 var checkInGroup = await _context.GroupUsers
                     .FirstOrDefaultAsync(p => p.UserId == userId && p.GroupId == item.Id);
+                item.Status = "Not joined";
                 if (checkInGroup != null)
                 {
-                    item.IsJoined = true;
+                    item.Status = checkInGroup.Status;
                 }
             }
             return Ok(listGroupDTO);
@@ -165,11 +169,26 @@ namespace PlanGuruAPI.Controllers
                 return BadRequest("Can't find this group");
             }
             var listUser = await _context.GroupUsers
-                .Where(p => p.GroupId == groupId)
+                .Where(p => p.GroupId == groupId && p.Status == "Joined")
                 .Include(p => p.User)
                 .Select(p => new { p.User.UserId, p.User.Name, p.User.Avatar})
                 .ToListAsync();
             return Ok(listUser);    
+        }
+        [HttpGet("{groupId}/users/pending")]
+        public async Task<IActionResult> GetPendingUserInGroup(Guid groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null)
+            {
+                return BadRequest("Can't find this group");
+            }
+            var listUser = await _context.GroupUsers
+                .Where(p => p.GroupId == groupId && p.Status == "Pending")
+                .Include(p => p.User)
+                .Select(p => new { p.User.UserId, p.User.Name, p.User.Avatar })
+                .ToListAsync();
+            return Ok(listUser);
         }
         [HttpGet("ownGroup/{masterUserId}")]
         public async Task<IActionResult> GetOwnGroup(Guid masterUserId)
@@ -237,9 +256,35 @@ namespace PlanGuruAPI.Controllers
             }
 
             var groupUser = _mapper.Map<GroupUser>(request);
+            groupUser.Status = "Pending";
             await _context.GroupUsers.AddAsync(groupUser);
             await _context.SaveChangesAsync();
             return Ok("Join group successfully");
+        }
+        [HttpPost("approveJoin")]
+        public async Task<IActionResult> approveJoin(JoinGroupRequest request)
+        {
+            var user = await _context.Users.FindAsync(request.UserId);
+            var group = await _context.Groups.FindAsync(request.GroupId);
+
+            if (user == null)
+            {
+                return BadRequest("Can't find this user");
+            }
+            if (group == null)
+            {
+                return BadRequest("Can't find this group");
+            }
+
+            var checkJoined = await _context.GroupUsers
+                .FirstOrDefaultAsync(p => p.UserId == request.UserId && p.GroupId == request.GroupId);
+            if(checkJoined == null)
+            {
+                return BadRequest("Can't find this join request");
+            }
+            checkJoined.Status = "Joined";
+            await _context.SaveChangesAsync();
+            return Ok("Approved this user to group");
         }
         [HttpPost("posts")]
         public async Task<IActionResult> CreatePost(CreatePostInGroupRequest request)

@@ -7,7 +7,7 @@
         public string GroupName { get; set; }       
         public string Description { get; set; }
         public string GroupImage { get; set; }
-        public bool IsJoined { get; set; }      
+        public string Status { get; set; }        
         public int NumberOfMembers { get; set; }
         public int NumberOfPosts { get; set; }      
     }

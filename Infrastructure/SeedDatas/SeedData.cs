@@ -104,27 +104,32 @@ namespace Infrastructure
                 new GroupUser()
                 {
                     GroupId = groups[0].Id,
-                    UserId = users[3].UserId
+                    UserId = users[3].UserId,
+                    Status = "Joined"
                 },
                 new GroupUser()
                 {
                     GroupId = groups[0].Id,
-                    UserId = users[4].UserId
+                    UserId = users[4].UserId,
+                    Status = "Pending"
                 },
                 new GroupUser()
                 {
                     GroupId = groups[1].Id,
-                    UserId = users[3].UserId
+                    UserId = users[3].UserId,
+                    Status = "Joined"
                 },
                 new GroupUser()
                 {
                     GroupId = groups[1].Id,
-                    UserId = users[4].UserId
+                    UserId = users[4].UserId,
+                    Status = "Joined"
                 },
                 new GroupUser()
                 {
                     GroupId = groups[1].Id,
-                    UserId = users[5].UserId
+                    UserId = users[5].UserId,
+                    Status = "Joined"
                 }
                 };
 
