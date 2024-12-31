@@ -231,6 +231,31 @@ namespace PlanGuruAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { group.Id, group.GroupName, group.MasterUserId });
         }
+        [HttpPost("kickUser")]
+        public async Task<IActionResult> BanUser(JoinGroupRequest request)
+        {
+            var user = await _context.Users.FindAsync(request.UserId);
+            var group = await _context.Groups.FindAsync(request.GroupId);
+
+            if (user == null)
+            {
+                return BadRequest("Can't find this user");
+            }
+            if (group == null)
+            {
+                return BadRequest("Can't find this group");
+            }
+
+            var checkJoined = await _context.GroupUsers
+                .FirstOrDefaultAsync(p => p.UserId == request.UserId && p.GroupId == request.GroupId);
+            if (checkJoined == null)
+            {
+                return BadRequest("This user is not in group");
+            }
+            checkJoined.Status = "Forbidden";
+            await _context.SaveChangesAsync();
+            return Ok("Kick user out successfully");
+        }
         [HttpPost("join")]
         public async Task<IActionResult> JoinGroup(JoinGroupRequest request)
         {
@@ -259,7 +284,7 @@ namespace PlanGuruAPI.Controllers
             groupUser.Status = "Pending";
             await _context.GroupUsers.AddAsync(groupUser);
             await _context.SaveChangesAsync();
-            return Ok("Join group successfully");
+            return Ok("Send request for join successfully, wating for admin approve");
         }
         [HttpPost("approveJoin")]
         public async Task<IActionResult> approveJoin(JoinGroupRequest request)
