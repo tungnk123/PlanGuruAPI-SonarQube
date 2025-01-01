@@ -26,18 +26,18 @@ namespace Infrastructure
             }
 
             var tags = tagRepository?.GetTagsAsync().Result ?? new List<string>
-        {
-            "plants",
-            "flowers",
-            "guides",
-            "diseases",
-            "qna",
-            "diy"
-        };
+            {
+                "plants",
+                "flowers",
+                "guides",
+                "diseases",
+                "qna",
+                "diy"
+            };
 
             var firstUserId = context.Users.First().UserId;
             var secondUserId = context.Users.Skip(1).First().UserId;
-            var thirdUserId = context.Users.Skip(2).First().UserId;
+            var thirdUserId = context.Users.Skip(3).First().UserId;
             if (!context.Posts.Any())
             {
                 var random = new Random();
@@ -148,21 +148,6 @@ namespace Infrastructure
                     }
                 }
 
-
-                context.SaveChanges();
-
-                var firstPostId = context.Posts.First().Id;
-                SeedComments(context, firstPostId, firstUserId);
-
-                var firstCommentId = context.Comments.First(c => c.PostId == firstPostId).Id;
-
-                SeedVotes(serviceScope, firstPostId, firstCommentId, firstUserId, secondUserId);
-            }
-
-
-            if (!context.Posts.Any())
-            {
-                var random = new Random();
                 for (int i = 0; i < 20; i++)
                 {
                     var randomTag = tags[random.Next(tags.Count)];
@@ -270,20 +255,6 @@ namespace Infrastructure
                     }
                 }
 
-
-                context.SaveChanges();
-
-                var firstPostId = context.Posts.First().Id;
-                SeedComments(context, firstPostId, firstUserId);
-
-                var firstCommentId = context.Comments.First(c => c.PostId == firstPostId).Id;
-
-                SeedVotes(serviceScope, firstPostId, firstCommentId, firstUserId, secondUserId);
-            }
-
-            if (!context.Posts.Any())
-            {
-                var random = new Random();
                 for (int i = 0; i < 20; i++)
                 {
                     var randomTag = tags[random.Next(tags.Count)];
@@ -401,6 +372,7 @@ namespace Infrastructure
 
                 SeedVotes(serviceScope, firstPostId, firstCommentId, firstUserId, secondUserId);
             }
+
         }
     }
 }
