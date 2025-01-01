@@ -20,7 +20,7 @@ namespace Infrastructure
                 Email = "nva@gmail.com",
                 Password = "123123",
                 Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/anh-den-ngau.jpeg",
-                Name = "Nguyễn Văn A"
+                Name = "Nguyen Van A"
             };
             User user02 = new User()
             {
@@ -28,7 +28,7 @@ namespace Infrastructure
                 Email = "nvb@gmail.com",
                 Password = "123123",
                 Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/anh-den-ngau-005.jpg",
-                Name = "Nguyễn Văn B"
+                Name = "Nguyen Van B"
             };
             User user03 = new User()
             {
@@ -36,7 +36,7 @@ namespace Infrastructure
                 Email = "nvc@gmail.com",
                 Password = "123123",
                 Avatar = "https://i.pinimg.com/474x/80/47/73/804773eb125fdc39791be82b75686382.jpg",
-                Name = "Nguyễn Văn C"
+                Name = "Nguyen Van C"
             };
             User user04 = new User()
             {
@@ -44,7 +44,7 @@ namespace Infrastructure
                 Email = "ntd@gmail.com",
                 Password = "123123",
                 Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/anh-den-ngau-003.jpg",
-                Name = "Nguyễn Thị D"
+                Name = "Nguyen D"
             };
             User user05 = new User()
             {
@@ -52,7 +52,7 @@ namespace Infrastructure
                 Email = "nec@gmail.com",
                 Password = "123123",
                 Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/anh-den-ngau-016.jpg",
-                Name = "Nguyễn Thị E"
+                Name = "Nguyen E"
             };
             User user06 = new User()
             {
@@ -60,7 +60,7 @@ namespace Infrastructure
                 Email = "nef@gmail.com",
                 Password = "123123",
                 Avatar = "https://i.pinimg.com/474x/80/47/73/804773eb125fdc39791be82b75686382.jpg",
-                Name = "Nguyễn Thị F"
+                Name = "Nguyen F"
             };
 
             var listUser = new List<User>() { user01, user02, user03, user04, user05, user06};
