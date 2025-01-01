@@ -156,6 +156,7 @@ namespace Infrastructure
                                 ProductId = item.Id,
                                 User = user,
                                 UserId = user.Id,
+                                TotalPrice = item.Price,
                                 Quantity = 3,
                                 ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
                                 Status = "Not Paid"
@@ -176,6 +177,7 @@ namespace Infrastructure
                                 ProductId = item.Id,
                                 User = user,
                                 UserId = user.Id,
+                                TotalPrice = item.Price,
                                 Quantity = 3,
                                 ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
                                 Status = "Paid"
@@ -197,6 +199,7 @@ namespace Infrastructure
                                 User = user,
                                 UserId = user.Id,
                                 Quantity = 3,
+                                TotalPrice = item.Price,
                                 ShippingAddress = "99 Nguyễn Văn Trỗi Dĩ An Bình Dương",
                                 Status = "Success"
                             };

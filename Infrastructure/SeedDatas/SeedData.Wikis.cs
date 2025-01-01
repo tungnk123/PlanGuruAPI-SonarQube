@@ -16,6 +16,8 @@ namespace Infrastructure
         {
             var firstWiki = context.Wikis.FirstOrDefault();
             var firstUser = context.Users.FirstOrDefault();
+            var secondUser = context.Users.Skip(1).FirstOrDefault();
+            var thirdUser = context.Users.Skip(4).FirstOrDefault(); 
 
             Console.WriteLine("Seeding Wikis...");
 
@@ -27,7 +29,7 @@ namespace Infrastructure
                     Title = $"Wiki Title {i + 1}",
                     ThumbnailImageUrl = "https://imgt.taimienphi.vn/cf/Images/np/2022/8/16/anh-gai-xinh-cute-de-thuong-hot-girl-2.jpg",
                     Content = $"This is the content for wiki {i + 1}.",
-                    Contributors = new List<User> { firstUser },
+                    Contributors = new List<User> { firstUser, secondUser, thirdUser },
                     AuthorId = firstUser != null ? firstUser.UserId : Guid.NewGuid(),
                     CreatedAt = DateTime.UtcNow
                 };
