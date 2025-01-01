@@ -25,7 +25,7 @@ namespace PlanGuruAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var listMembership = await _context.Memberships.ToListAsync();
+            var listMembership = await _context.Memberships.OrderByDescending(p => p.CreatedAt).ToListAsync();
             return Ok(listMembership);
         }
         [HttpGet("{membershipId}")]
