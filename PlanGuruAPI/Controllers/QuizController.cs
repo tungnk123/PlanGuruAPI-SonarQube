@@ -58,14 +58,14 @@ public class QuizController : ControllerBase
     }
 
 
-    [HttpPut("{quizId}")]
-    public async Task<IActionResult> EditQuiz(string quizId, [FromBody] Quiz quiz)
+    [HttpPut("EditQuiz")]
+    public async Task<IActionResult> EditQuiz([FromBody] Quiz quiz)
     {
         try
         {
             var request = new EditQuizRequest 
             { 
-                QuizId = quizId,
+                QuizId = quiz.QuizId,
                 Quiz = quiz
             };
             var response = await _quizService.EditQuizAsync(request);
@@ -111,7 +111,7 @@ public class QuizController : ControllerBase
         }
     }
 
-    [HttpPost("{quizId}/validate")]
+    [HttpPost("validate")]
     public async Task<IActionResult> ValidateAnswer([FromBody] ValidateAnswerRequest request)
     {
         try
