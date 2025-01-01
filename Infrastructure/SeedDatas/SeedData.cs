@@ -26,9 +26,9 @@ namespace Infrastructure
 
                 // Gọi các phần seed khác
                 SeedUsers(context);
-                SeedWikis(context);
                 SeedPosts(context, serviceScope);
                 SeedProducts(context);
+                SeedWikis(context);
                 SeedMemberships(context);
 
                 #region Seed group
