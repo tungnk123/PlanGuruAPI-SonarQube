@@ -51,8 +51,8 @@ namespace PlanGuruAPI.Mapping
             CreateMap<Membership, MembershipCreateDTO>().ReverseMap();
 
             CreateMap<GroupReadDTO, Group>().ReverseMap()
-                 .ForMember(dest => dest.NumberOfMembers, opt => opt.MapFrom(p => p.UsersInGroup.Count))
-                 .ForMember(dest => dest.NumberOfPosts, opt => opt.MapFrom(p => p.PostInGroup.Count));   
+                 .ForMember(dest => dest.NumberOfMembers, opt => opt.MapFrom(p => p.UsersInGroup.Where(p => p.Status == "Joined").ToList().Count))
+                 .ForMember(dest => dest.NumberOfPosts, opt => opt.MapFrom(p => p.PostInGroup.Where(p => p.IsApproved == true).ToList().Count));   
 
             
             

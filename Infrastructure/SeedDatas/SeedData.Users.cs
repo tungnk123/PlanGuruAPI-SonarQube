@@ -65,6 +65,19 @@ namespace Infrastructure
 
             var listUser = new List<User>() { user01, user02, user03, user04, user05, user06};
 
+            for(int i = 0; i < 30; i++)
+            {
+                var user = new User()
+                {
+                    UserId = Guid.NewGuid(),
+                    Email = $"user{i}@gmail.com",
+                    Password = "123123",
+                    Avatar = "https://www.vietnamworks.com/hrinsider/wp-content/uploads/2023/12/anh-den-ngau-016.jpg",
+                    Name = $"Marry Jane {i}"
+                };
+                context.Users.Add(user);    
+            }
+
 
             User user2 = new User()
             {
