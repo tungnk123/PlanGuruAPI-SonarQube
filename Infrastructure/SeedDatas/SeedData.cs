@@ -117,10 +117,10 @@ namespace Infrastructure
                             User = listUserForGroup[i],
                             UserId = listUserForGroup[i].UserId,
                         };
-                        if (i % 4 == 0) continue;
-                        if (i % 4 == 1) groupUser.Status = "Pending";
-                        if (i % 4 == 2) groupUser.Status = "Joined";
-                        if (i % 4 == 3) groupUser.Status = "Forbidden";
+                        if ((i + j) % 4 == 0) continue;
+                        if ((i + j) % 4 == 1) groupUser.Status = "Pending";
+                        if ((i + j) % 4 == 2) groupUser.Status = "Joined";
+                        if ((i + j) % 4 == 3) groupUser.Status = "Forbidden";
                         context.GroupUsers.Add(groupUser);
                     }
                 }
