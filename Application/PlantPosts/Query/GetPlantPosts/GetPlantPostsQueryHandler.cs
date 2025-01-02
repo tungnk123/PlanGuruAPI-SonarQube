@@ -23,6 +23,7 @@ namespace Application.PlantPosts.Query.GetPlantPosts
             var skip = (request.Page - 1) * request.Limit;
 
             var baseQuery = _postRepo.QueryPosts()
+                .Where(p => p.GroupId == null)
                                      .Include(p => p.User)
                                      .Include(p => p.PostComments)
                                      .Include(p => p.PostShares);
