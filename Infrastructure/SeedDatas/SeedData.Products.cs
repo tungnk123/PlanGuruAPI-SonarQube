@@ -24,6 +24,12 @@ namespace Infrastructure
                 return;
             }
 
+            firstUser.IsHavePremium = true;
+            secondUser.IsHavePremium = true;
+            thirdUser.IsHavePremium = true;
+
+            context.SaveChanges();
+
             var plantImages1 = new List<string>
                         {
                      "https://locat.com.vn/ShowTopicSubImage.aspx?id=37509",
