@@ -90,7 +90,7 @@ Care Instructions:
             {
                 Id = Guid.NewGuid(),
                 Title = "Orchid Wiki",
-                ThumbnailImageUrl = "https://hoatuoi24h.com.vn/wp-content/uploads/2020/10/hoa-orchid-la-gi.jpg",
+                ThumbnailImageUrl = "https://www.livelyroot.com/cdn/shop/files/Pl_5in_Phalaenopsis-Arcadia-Orchid_Detail_01.jpg?v=1713237478&width=730",
                 Content = @"General Description:
 Orchids are exotic and diverse flowering plants that are prized for their beauty and variety. They are found on all continents except Antarctica.
 
