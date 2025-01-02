@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanGuruAPI.DTOs;
 using PlanGuruAPI.DTOs.CommentDTOs;
+using PlanGuruAPI.DTOs.GroupDTOs;
 using PlanGuruAPI.DTOs.PlantPostDTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -81,6 +82,26 @@ namespace PlanGuruAPI.Controllers
         {
             var filters = await _mediator.Send(new GetFiltersQuery());
             return Ok(filters);
+        }
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetPostForUser(Guid userId)
+        {
+            var checkUser = await _context.Users.FindAsync(userId);
+            if(checkUser == null)
+            {
+                return NotFound("User not found");
+            }
+            var listPostForUser = await _context.Posts
+                                     .Include(p => p.PostComments)
+                                     .Include(p => p.PostShares)
+                                     .Include(p => p.PostUpvotes)
+                                     .Include(p => p.PostDevotes)
+                                     .Include(p => p.User)
+                                     .Include(p => p.PostImages)
+                                     .Where(p => p.UserId == userId && p.IsApproved == true).ToListAsync();
+            return Ok(_mapper.Map<List<PostInGroupDTO>>(listPostForUser));
+
+            
         }
 
         [HttpPost("upvote")]
