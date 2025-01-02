@@ -14,6 +14,7 @@
         public int NumberOfComment { get; set; }
         public int NumberOfShare { get; set; }
         public string CreatedDate { get; set; }
+        public DateTime CreatedDateDatetime { get; set; }   
         public string Title { get; set; }
         public IEnumerable<string> Images { get; set; }        
 
