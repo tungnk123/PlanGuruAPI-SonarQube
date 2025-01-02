@@ -13,10 +13,12 @@ namespace Application.PlantPosts.Command.CreatePost
     public class CreatePlantPostCommandHandler : IRequestHandler<CreatePlantPostCommand, CreatePostResult>
     {
         private readonly IPlantPostRepository _postRepo;
-
-        public CreatePlantPostCommandHandler(IPlantPostRepository postRepo)
+        private readonly IUserRepository _userRepo;
+        
+        public CreatePlantPostCommandHandler(IPlantPostRepository postRepo, IUserRepository userRepository)
         {
             _postRepo = postRepo;
+            _userRepo = userRepository;
         }
 
         public async Task<CreatePostResult> Handle(CreatePlantPostCommand request, CancellationToken cancellationToken)
@@ -45,6 +47,11 @@ namespace Application.PlantPosts.Command.CreatePost
                 };
                 await _postRepo.CreatePostImage(postImage);
             }
+
+            // Add user experience
+            var user = await _userRepo.GetByIdAsync(request.UserId);
+            user.TotalExperiencePoints += 100;
+            await _userRepo.UpdateAsync(user);
 
             return new CreatePostResult("success", post.Id, "Post created successfully");
         }
