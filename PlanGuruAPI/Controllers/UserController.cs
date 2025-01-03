@@ -132,6 +132,18 @@ namespace PlanGuruAPI.Controllers
             return Ok(new { experiencePoints = user.TotalExperiencePoints });
         }
 
+        [HttpPut("{userId}/add-experience-points")]
+        public async Task<IActionResult> AddExperiencePoints(Guid userId, [FromBody] int points)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            user.TotalExperiencePoints += points;
+            await _context.SaveChangesAsync();
+            return Ok(new { experiencePoints = user.TotalExperiencePoints });
+        }
+
         [HttpGet("{userId}/contribution-points")]
         public async Task<IActionResult> GetContributionPoints(Guid userId)
         {
