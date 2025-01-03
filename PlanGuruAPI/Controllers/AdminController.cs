@@ -48,6 +48,7 @@ namespace PlanGuruAPI.Controllers
                     UserNickName = user.Name,
                     Background = post.Background,
                     CreatedDate = FormatCreatedAt(post.CreatedAt),
+                    CreatedDateDatetime = post.CreatedAt,
                     Description = post.Description,
                     NumberOfComment = post.PostComments.Count,
                     NumberOfDevote = post.PostDevotes.Count,
