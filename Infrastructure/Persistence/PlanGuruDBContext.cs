@@ -36,6 +36,7 @@ namespace Infrastructure.Persistence
         public DbSet<Order> Orders { get; set; }
         public DbSet<Membership> Memberships { get; set; }
         public DbSet<PostImage> PostImages { get; set; }
+        public DbSet<MembershipHistory> MembershipsHistory { get; set; }
 
         public override int SaveChanges()
         {
@@ -87,6 +88,11 @@ namespace Infrastructure.Persistence
                 .HasForeignKey(p => p.ChatRoomId);
             modelBuilder.Entity<ChatMessage>()
                 .HasKey(p => p.ChatMessageId);
+
+            modelBuilder.Entity<MembershipHistory>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId);
 
             modelBuilder.Entity<Comment>(entity =>
             {

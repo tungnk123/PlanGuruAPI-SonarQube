@@ -28,6 +28,26 @@ namespace PlanGuruAPI.Controllers
             var listMembership = await _context.Memberships.OrderByDescending(p => p.CreatedAt).ToListAsync();
             return Ok(listMembership);
         }
+        [HttpGet("membershipHistory")]
+        public async Task<IActionResult> GetMembershipHistory()
+        {
+            var listMembershipHistory = await _context.MembershipsHistory.Include(p => p.User).OrderByDescending(p => p.CreatedAt).ToListAsync();
+            var listMembershipReadDTO = new List<MembershipHistoryReadDTO>();
+            foreach (var membershipHistory in listMembershipHistory)
+            {
+                var membershipReadDTO = new MembershipHistoryReadDTO()
+                {
+                    UserId = membershipHistory.UserId,
+                    Email = membershipHistory.User.Email,
+                    Name = membershipHistory.User.Name,
+                    BoughtAt = membershipHistory.CreatedAt,
+                    PackageName = membershipHistory.PackageName,
+                    PackagePrice = membershipHistory.PackagePrice
+                };
+                listMembershipReadDTO.Add(membershipReadDTO);
+            }
+            return Ok(listMembershipReadDTO);
+        }
         [HttpGet("{membershipId}")]
         public async Task<IActionResult> GetById(Guid membershipId)
         {

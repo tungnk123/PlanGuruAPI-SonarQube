@@ -78,9 +78,9 @@ namespace PlanGuruAPI.Controllers
             return Ok(new { user.UserId, user.Name, user.Avatar, user.Email, user.IsHavePremium });
         }
         [HttpPost("goPremium")]
-        public async Task<IActionResult> GoPremium(Guid userId)
+        public async Task<IActionResult> GoPremium(GoPremiumDTO request)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(request.UserId);
             if(user == null)
             {
                 return NotFound("Can't find this user");
@@ -90,6 +90,15 @@ namespace PlanGuruAPI.Controllers
                 return BadRequest("This user is already have premium");
             }
             user.IsHavePremium = true;
+            var membershipHistory = new MembershipHistory()
+            {
+                PackageName = request.PackageName,
+                PackagePrice = request.PackagePrice,
+                User = user,
+                UserId = request.UserId,
+                CreatedAt = DateTime.Now
+            };
+            _context.MembershipsHistory.Add(membershipHistory);
             await _context.SaveChangesAsync();
             return Ok("Upgrade account successfully");
         }
