@@ -91,6 +91,7 @@ namespace Infrastructure.Persistence.Repository
         public async Task ApprovePostByAdmin(Post post)
         {
             post.IsApproved = true;
+            post.CreatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
         }
 

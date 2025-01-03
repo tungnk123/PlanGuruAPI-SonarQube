@@ -36,7 +36,7 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                 query = query.Where(p => p.Tag == request.Tag);
             }
 
-            var posts = await query.Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
+            var posts = await query.OrderByDescending(p => p.CreatedAt).Skip(skip).Take(request.Limit).ToListAsync(cancellationToken);
 
             var postDtos = new List<PlantPostDto>();
 
@@ -83,8 +83,8 @@ namespace Application.PlantPosts.Query.GetPlantPosts
                     postDtos = postDtos.OrderByDescending(p => p.NumberOfUpvote).ToList();
                     break;
                 case "time":
+                    break;
                 default:
-                    postDtos = postDtos.OrderByDescending(p => p.CreatedDate).ToList();
                     break;
             }
 

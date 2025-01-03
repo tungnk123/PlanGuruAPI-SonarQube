@@ -20,7 +20,7 @@ namespace Application.PlantPosts.Common.GetPlantPosts
         public int NumberOfDevote { get; init; }
         public int NumberOfComment { get; init; }
         public int NumberOfShare { get; init; }
-        public string CreatedDate { get; init; }
+        public string CreatedDate { get; init; }        
         public bool HasUpvoted { get; init; }
         public bool HasDevoted { get; init; }
         public IEnumerable<string> Images { get; set; }    

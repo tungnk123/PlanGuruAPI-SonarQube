@@ -33,6 +33,8 @@ namespace PlanGuruAPI.Controllers
         public async Task<IActionResult> GetUnApprovePost()
         {
             var listUnApprovedPost = await _planPostRepository.GetUnApprovedPost();
+            listUnApprovedPost = listUnApprovedPost.Where(p => p.GroupId == null).ToList();
+            listUnApprovedPost = listUnApprovedPost.OrderByDescending(p => p.CreatedAt).ToList();
             var listUnApprovedPostReadDTO = new List<PostReadDTO>();
             foreach (var post in listUnApprovedPost)
             {
