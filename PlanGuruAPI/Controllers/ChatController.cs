@@ -81,7 +81,7 @@ namespace PlanGuruAPI.Controllers
                     ChatMessageId = chatMessage.ChatMessageId,
                     MediaLink = chatMessage.MediaLink,
                     Message = chatMessage.Message,
-                    SendDate = DateTime.Now,
+                    SendDate = chatMessage.SendDate,
                     Type = chatMessage.Type,
                 };
                 listChatMessageReadDTO.Add(chatMessageReadDTO);
